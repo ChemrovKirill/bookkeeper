@@ -1,7 +1,8 @@
-from bookkeeper.repository.sqlite_repository import SQLiteRepository
-
 import pytest
 import sqlite3
+from dataclasses import dataclass
+
+from bookkeeper.repository.sqlite_repository import SQLiteRepository
 
 DB_FILE = "database/test_sqlrepo.db"
 
@@ -18,16 +19,17 @@ def create_bd():
 
 @pytest.fixture
 def custom_class():
+    @dataclass
     class Custom():
-        pk: int = 0
-        f1: int = 0
+        f1: int
         f2: str = "f2_value"
+        pk: int = 0
     return Custom
 
 
 @pytest.fixture
 def repo(custom_class, create_bd):
-    return SQLiteRepository(db_file=DB_FILE, cls=type(custom_class()))
+    return SQLiteRepository(db_file=DB_FILE, cls=custom_class)
 
 
 def test_row2obj(repo):
@@ -40,9 +42,7 @@ def test_row2obj(repo):
 
 def test_crud(repo, custom_class):
     # create
-    obj_add = custom_class()
-    obj_add.f1 = 1
-    obj_add.f2 = "test_crud"
+    obj_add = custom_class(f1=1, f2="test_crud")
     pk = repo.add(obj_add)
     assert pk == obj_add.pk
     # read
@@ -52,10 +52,7 @@ def test_crud(repo, custom_class):
     assert obj_get.f1 == obj_add.f1
     assert obj_get.f2 == obj_add.f2
     # update
-    obj_upd = custom_class()
-    obj_upd.pk = pk
-    obj_upd.f1 = 11
-    obj_upd.f2 = "test_crud_upd"
+    obj_upd = custom_class(f1=11, f2="test_crud_upd", pk=pk)
     repo.update(obj_upd)
     obj_get = repo.get(pk)
     assert obj_get.pk == obj_upd.pk
@@ -67,8 +64,7 @@ def test_crud(repo, custom_class):
 
 
 def test_cannot_add_with_pk(repo, custom_class):
-    obj = custom_class()
-    obj.pk = 1
+    obj = custom_class(f1=1, pk=1)
     with pytest.raises(ValueError):
         repo.add(obj)
 
@@ -79,14 +75,13 @@ def test_cannot_add_without_pk(repo):
 
 
 def test_cannot_update_unexistent(repo, custom_class):
-    obj = custom_class()
-    obj.pk = 100
+    obj = custom_class(f1=1, pk=100)
     with pytest.raises(ValueError):
         repo.update(obj)
 
 
 def test_cannot_update_without_pk(repo, custom_class):
-    obj = custom_class()
+    obj = custom_class(f1=1, pk=0)
     with pytest.raises(ValueError):
         repo.update(obj)
 
@@ -101,7 +96,7 @@ def test_cannot_delete_unexistent(repo):
 
 
 def test_get_all(repo, custom_class):
-    objects = [custom_class() for i in range(5)]
+    objects = [custom_class(f1=1) for i in range(5)]
     for o in objects:
         repo.add(o)
     objects_pk = [o.pk for o in objects]
@@ -111,7 +106,7 @@ def test_get_all(repo, custom_class):
 def test_get_all_with_condition(repo, custom_class):
     objects = []
     for i in range(5):
-        o = custom_class()
+        o = custom_class(f1=1)
         o.f1 = i
         o.f2 = 'test'
         repo.add(o)

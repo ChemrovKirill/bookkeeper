@@ -29,13 +29,13 @@ class SQLiteRepository(AbstractRepository[T]):
         if getattr(obj, 'pk', None) != 0:
             raise ValueError(f'trying to add object {obj} with filled `pk` attribute')
         names = ', '.join(self.fields.keys())
-        quastions = ', '.join("?" * len(self.fields))
+        questions = ', '.join("?" * len(self.fields))
         values = [getattr(obj, f) for f in self.fields]
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
             cur.execute('PRAGMA foreign_keys = ON')
             cur.execute(
-                f'INSERT INTO {self.table_name} ({names}) VALUES({quastions})',
+                f'INSERT INTO {self.table_name} ({names}) VALUES({questions})',
                 values
             )
             obj.pk = cur.lastrowid
@@ -44,9 +44,8 @@ class SQLiteRepository(AbstractRepository[T]):
 
     def _row2obj(self, rowid: int, row: tuple[Any]) -> T:
         """ Конвертирует строку из БД в объект типа Т """
-        obj = self.obj_cls()
-        for field, value in zip(self.fields, row):
-            setattr(obj, field, value)
+        kwargs = dict(zip(self.fields, row))
+        obj = self.obj_cls(**kwargs)
         obj.pk = rowid
         return obj
 
