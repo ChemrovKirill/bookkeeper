@@ -15,11 +15,6 @@ class SQLiteRepository(AbstractRepository[T]):
         self.fields = get_annotations(cls, eval_str=True)
         self.fields.pop('pk')
         self.obj_cls = cls
-        # with sqlite3.connect(self.db_file) as con:
-        #     cur = con.cursor()
-        #     names = ', '.join(self.fields.keys())
-        #     cur.execute(f"CREATE TABLE {self.table_name}({names})")
-        #     con.close()
         
     def add(self, obj: T) -> int:
         if getattr(obj, 'pk', None) != 0:
@@ -38,28 +33,44 @@ class SQLiteRepository(AbstractRepository[T]):
         con.close()
         return obj.pk
 
+    def _row2obj(self, rowid: int, row: tuple) -> T:
+        """ Конвертирует строку из БД в объект типа Т """
+        obj = self.obj_cls()
+        for field, value in zip(self.fields, row):
+            setattr(obj, field, value)
+        obj.pk = rowid
+        return obj
+
     def get(self, pk: int) -> T | None:
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
-            res_row = cur.execute(
+            row = cur.execute(
                 f'SELECT * FROM {self.table_name} '
                 + f'WHERE ROWID=={pk}'
             ).fetchone()
         con.close()
-        if res_row is None:
+        if row is None:
             return None
-        res_obj = self.obj_cls()
-        for field, value in zip(self.fields, res_row):
-            setattr(res_obj, field, value)
-        res_obj.pk = pk
-        return res_obj
+        obj = self._row2obj(pk, row)
+        return obj
 
     def get_all(self, where: dict[str, Any] | None = None) -> list[T]:
-        """
-        Получить все записи по некоторому условию
-        where - условие в виде словаря {'название_поля': значение}
-        если условие не задано (по умолчанию), вернуть все записи
-        """
+        with sqlite3.connect(self.db_file) as con:
+            cur = con.cursor()
+            if where is None:
+                rows = cur.execute(
+                    f'SELECT ROWID, * FROM {self.table_name} '
+                ).fetchall()
+            else:
+                fields = " AND ".join([f"{f}=?" for f in where.keys()])
+                rows = cur.execute(
+                    f'SELECT ROWID, * FROM {self.table_name} '
+                    + f'WHERE {fields}',
+                    list(where.values())
+                ).fetchall()
+        con.close()
+        return [self._row2obj(r[0], r[1:-1]) for r in rows]
+
 
     def update(self, obj: T) -> None:
         fields = ", ".join([f"{f}=?" for f in self.fields.keys()])
