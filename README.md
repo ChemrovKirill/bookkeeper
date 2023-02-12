@@ -43,6 +43,7 @@ poetry install
 что вы находитесь в корневой папке проекта):
 ```commandline
 poetry run pytest --cov
+poetry run python -m pytest
 poetry run mypy --strict bookkeeper
 poetry run pylint bookkeeper
 poetry run flake8 bookkeeper
@@ -51,7 +52,7 @@ poetry run flake8 bookkeeper
 При проверке работы будут использоваться эти же инструменты с теми же настройками.
 
 Задача первого этапа:
-1. Сделать fork репозитория и склонировать его себе на компьютер
+1. Сделать fork репозитория и склонировать его себе на компьютер //done
 2. Написать класс SqliteRepository
 3. Написать тесты к этому классу
 4. Подключить СУБД sqlite к simple_client (пока он работает в оперативной памяти и все забывает при выходе)
