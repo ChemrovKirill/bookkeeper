@@ -30,6 +30,14 @@ def repo(custom_class, create_bd):
     return SQLiteRepository(db_file=DB_FILE, cls=type(custom_class()))
 
 
+def test_row2obj(repo):
+    row = (11, "test_row2obj")
+    obj = repo._row2obj(10, row)
+    assert obj.pk == 10
+    assert obj.f1 == 11
+    assert obj.f2 == "test_row2obj"
+
+
 def test_crud(repo, custom_class):
     # create
     obj_add = custom_class()
@@ -70,20 +78,24 @@ def test_cannot_add_without_pk(repo):
         repo.add(0)
 
 
+def test_cannot_update_unexistent(repo, custom_class):
+    obj = custom_class()
+    obj.pk = 100
+    with pytest.raises(ValueError):
+        repo.update(obj)
+
+
 def test_cannot_update_without_pk(repo, custom_class):
     obj = custom_class()
     with pytest.raises(ValueError):
         repo.update(obj)
 
 
-def test_cannot_update_unexistent(repo, custom_class):
-    obj = custom_class()
-    obj.pk = -1
-    with pytest.raises(ValueError):
-        repo.update(obj)
+def test_get_unexistent(repo):
+    assert repo.get(-1) is None
 
 
-def test_cannot_update_unexistent(repo, custom_class):
+def test_cannot_delete_unexistent(repo):
     with pytest.raises(ValueError):
         repo.delete(-1)
 

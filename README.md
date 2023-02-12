@@ -42,7 +42,7 @@ poetry install
 Для запуска тестов и статических анализаторов используйте следующие команды (убедитесь, 
 что вы находитесь в корневой папке проекта):
 ```commandline
-poetry run pytest --cov
+poetry run pytest --cov --cov-report term-missing
 poetry run python -m pytest
 poetry run mypy --strict bookkeeper
 poetry run pylint bookkeeper
@@ -53,8 +53,8 @@ poetry run flake8 bookkeeper
 
 Задача первого этапа:
 1. Сделать fork репозитория и склонировать его себе на компьютер //done
-2. Написать класс SqliteRepository
-3. Написать тесты к этому классу
+2. Написать класс SqliteRepository //done
+3. Написать тесты к этому классу //done
 4. Подключить СУБД sqlite к simple_client (пока он работает в оперативной памяти и все забывает при выходе)
 
 Для сдачи работы достаточно прислать ссылку на свой форк, pull-request создавать 
