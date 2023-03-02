@@ -79,7 +79,7 @@ class MainWindow(QtWidgets.QMainWindow):
         "Вы уверены?\nВсе несохраненные данные будут потеряны.")
         if reply == QtWidgets.QMessageBox.Yes:
             event.accept()
-            #QtWidgets.QApplication.instance().quit()
+            QtWidgets.QApplication.instance().quit()
         else:
             event.ignore()
 

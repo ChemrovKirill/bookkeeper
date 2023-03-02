@@ -20,7 +20,7 @@ class ExpensesTableWidget(QtWidgets.QTableWidget):
         header.setSectionResizeMode(
             3, QtWidgets.QHeaderView.Stretch)
         self.setEditTriggers(
-            QtWidgets.QAbstractItemView.NoEditTriggers)
+            QtWidgets.QAbstractItemView.DoubleClicked)
         self.verticalHeader().hide()
 
     def add_data(self, data: list[list[str]]):

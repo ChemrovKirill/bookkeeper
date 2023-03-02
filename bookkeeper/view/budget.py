@@ -15,7 +15,7 @@ class BudgetTableWidget(QtWidgets.QTableWidget):
         for h in [self.horizontalHeader(), self.verticalHeader(),]:
             h.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)     
         self.setEditTriggers(
-            QtWidgets.QAbstractItemView.NoEditTriggers)
+            QtWidgets.QAbstractItemView.DoubleClicked)
 
     def add_data(self, data: list[list[str]]):
         for i, row in enumerate(data):
