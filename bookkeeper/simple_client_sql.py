@@ -11,18 +11,18 @@ cat_repo = SQLiteRepository[Category](db_file="database/simple-client-sql.db",
                                       cls=Category)
 exp_repo = SQLiteRepository[Expense](db_file="database/simple-client-sql.db",
                                      cls=Expense)
+if len(cat_repo.get_all()) == 0:
+    cats = '''
+    продукты
+        мясо
+            сырое мясо
+            мясные продукты
+        сладости
+    книги
+    одежда
+    '''.splitlines()
 
-cats = '''
-продукты
-    мясо
-        сырое мясо
-        мясные продукты
-    сладости
-книги
-одежда
-'''.splitlines()
-
-Category.create_from_tree(read_tree(cats), cat_repo)
+    Category.create_from_tree(read_tree(cats), cat_repo)
 
 while True:
     try:
