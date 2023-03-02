@@ -74,12 +74,29 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setStatusBar(QtWidgets.QStatusBar(self))
         self.statusBar().setStatusTip("bookkeeper v0.1")
 
+    def closeEvent(self, event):
+        reply = QtWidgets.QMessageBox.question(self, 'Закрыть приложение',
+        "Вы уверены?\nВсе несохраненные данные будут потеряны.")
+        if reply == QtWidgets.QMessageBox.Yes:
+            event.accept()
+            #QtWidgets.QApplication.instance().quit()
+        else:
+            event.ignore()
 
-app = QtWidgets.QApplication(sys.argv)
-app.setStyle("Fusion")
-app.setPalette(PaletteMode(is_dark_mode=True))
 
-window = MainWindow()
-window.resize(800, 800)
-window.show()
-sys.exit(app.exec())
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle("Fusion")
+    app.setPalette(PaletteMode(is_dark_mode=True))
+
+    window = MainWindow()
+    window.resize(800, 800)
+    window.show()
+    sys.exit(app.exec())
+
+    # import sys
+    # from PySide6 import QtWidgets
+    # app = QtWidgets.QApplication(sys.argv)
+    # window = QtWidgets.QWidget()
+    # window.show()
+    # sys.exit(app.exec())
