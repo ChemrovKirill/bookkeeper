@@ -3,23 +3,45 @@ from PySide6 import QtWidgets
 from bookkeeper.view.group_widgets import GroupLabel, LabeledComboBoxInput, LabeledLineInput
 
 
-class NewExpenseGroup(QtWidgets.QGroupBox):
+#todo: new file
+class CatsEditWindow(QtWidgets.QWidget):
     categories = [f"Категория {2*i}" for i in range(11)]
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.vbox = QtWidgets.QVBoxLayout()
-        self.label = GroupLabel("<b>Новая трата</b>")
+        self.label = GroupLabel("<b>Список категорий</b>")
         self.vbox.addWidget(self.label)
-        self.amount_input = LabeledLineInput("Сумма", "0")
-        self.vbox.addWidget(self.amount_input)
         self.category_input = LabeledComboBoxInput("Категория", self.categories)
         self.vbox.addWidget(self.category_input)
+        self.setLayout(self.vbox)
+        
+
+class NewExpenseGroup(QtWidgets.QGroupBox):
+    categories = [f"Категория {2*i}" for i in range(11)]
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.grid = QtWidgets.QGridLayout()
+        self.label = GroupLabel("<b>Новая трата</b>")
+        self.grid.addWidget(self.label,0,0,1,3)
+        self.amount_input = LabeledLineInput("Сумма", "0")
+        self.grid.addWidget(self.amount_input,1,0,1,2)
+        self.category_input = LabeledComboBoxInput("Категория", self.categories)
+        self.grid.addWidget(self.category_input,2,0,1,2)
+        self.cats_edit_button = QtWidgets.QPushButton('Редактировать')
+        self.cats_edit_button.clicked.connect(self.cats_edit)
+        self.grid.addWidget(self.cats_edit_button,2,2,1,1)
         self.submit_button = QtWidgets.QPushButton('Добавить')
         self.submit_button.clicked.connect(self.submit)
-        self.vbox.addWidget(self.submit_button)
-        self.setLayout(self.vbox)
+        self.grid.addWidget(self.submit_button,3,0,1,2)
+        self.setLayout(self.grid)
     
     def submit(self):
         print(f"Новая трата в категории {self.category_input.text()} на сумму {self.amount_input.text()} добавлена")
         self.amount_input.clear()
         self.category_input.clear()
+    
+    def cats_edit(self):
+        self.window = CatsEditWindow()
+        self.window.resize(400, 400)
+        self.window.show()
+        # todo: QTreeWidget
