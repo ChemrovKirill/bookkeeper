@@ -62,14 +62,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.main_widget = MainWidget()
         self.setCentralWidget(self.main_widget)
 
-        toolbar = QtWidgets.QToolBar("My main toolbar")
-        button_action = QAction("toolBar", self)
-        button_action.triggered.connect(lambda s: print(s))
-        toolbar.addAction(button_action)
-        self.addToolBar(toolbar)
+        # toolbar = QtWidgets.QToolBar("My main toolbar")
+        # button_action = QAction("toolBar", self)
+        # button_action.triggered.connect(lambda s: print(s))
+        # toolbar.addAction(button_action)
+        # self.addToolBar(toolbar)
 
-        menu = self.menuBar().addMenu("menuBar")
-        menu.addAction(button_action)
+        #menu = self.menuBar().addMenu("menuBar")
+        # menu.addAction(button_action)
 
         self.setStatusBar(QtWidgets.QStatusBar(self))
         self.statusBar().setStatusTip("bookkeeper v0.1")
@@ -79,7 +79,6 @@ class MainWindow(QtWidgets.QMainWindow):
         "Вы уверены?\nВсе несохраненные данные будут потеряны.")
         if reply == QtWidgets.QMessageBox.Yes:
             event.accept()
-            QtWidgets.QApplication.instance().quit()
         else:
             event.ignore()
 
