@@ -28,7 +28,6 @@ class LabeledComboBoxInput(QtWidgets.QWidget):
         self.items = items
         self.combo_box.addItems(items)
         self.combo_box.setPlaceholderText(items[0])
-        self.combo_box.setLineEdit(QtWidgets.QLineEdit())
         self.layout.addWidget(self.combo_box, stretch=5)
         self.setLayout(self.layout)
 
