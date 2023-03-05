@@ -107,7 +107,5 @@ def test_get_all_with_condition(repo, custom_class):
         o.f2 = 'test'
         repo.add(o)
         objects.append(o)
-    #object_get_pk = [o.pk for o in repo.get_all({'f1': 0})]
     assert [objects[0]] == repo.get_all({'f1': 0})
-    #objects_get_pk = [o.pk for o in repo.get_all({'f2': 'test'})]
     assert objects == repo.get_all({'f2': 'test'})
