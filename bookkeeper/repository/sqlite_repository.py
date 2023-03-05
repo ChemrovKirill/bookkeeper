@@ -70,14 +70,14 @@ class SQLiteRepository(AbstractRepository[T]):
                     f'SELECT ROWID, * FROM {self.table_name} '
                 ).fetchall()
             else:
-                fields = " AND ".join([f"{f}=?" for f in where.keys()])
+                fields = " AND ".join([f"{f} LIKE ?" for f in where.keys()])
                 rows = cur.execute(
                     f'SELECT ROWID, * FROM {self.table_name} '
                     + f'WHERE {fields}',
                     list(where.values())
                 ).fetchall()
         con.close()
-        return [self._row2obj(r[0], r[1:-1]) for r in rows]
+        return [self._row2obj(r[0], r[1:]) for r in rows]
 
     def update(self, obj: T) -> None:
         fields = ", ".join([f"{f}=?" for f in self.fields.keys()])

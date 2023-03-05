@@ -55,9 +55,7 @@ def test_crud(repo, custom_class):
     obj_upd = custom_class(f1=11, f2="test_crud_upd", pk=pk)
     repo.update(obj_upd)
     obj_get = repo.get(pk)
-    assert obj_get.pk == obj_upd.pk
-    assert obj_get.f1 == obj_upd.f1
-    assert obj_get.f2 == obj_upd.f2
+    assert obj_get == obj_upd
     # delete
     repo.delete(pk)
     assert repo.get(pk) is None
@@ -99,9 +97,7 @@ def test_get_all(repo, custom_class):
     objects = [custom_class(f1=1) for i in range(5)]
     for o in objects:
         repo.add(o)
-    objects_pk = [o.pk for o in objects]
-    objects_get_pk = [o.pk for o in repo.get_all()]
-    assert objects_pk == objects_get_pk
+    assert objects == repo.get_all()
 
 def test_get_all_with_condition(repo, custom_class):
     objects = []
@@ -111,7 +107,7 @@ def test_get_all_with_condition(repo, custom_class):
         o.f2 = 'test'
         repo.add(o)
         objects.append(o)
-    object_get_pk = [o.pk for o in repo.get_all({'f1': 0})]
-    assert object_get_pk[0] == objects[0].pk
-    objects_get_pk = [o.pk for o in repo.get_all({'f2': 'test'})]
-    assert objects_get_pk == [o.pk for o in objects]
+    #object_get_pk = [o.pk for o in repo.get_all({'f1': 0})]
+    assert [objects[0]] == repo.get_all({'f1': 0})
+    #objects_get_pk = [o.pk for o in repo.get_all({'f2': 'test'})]
+    assert objects == repo.get_all({'f2': 'test'})
