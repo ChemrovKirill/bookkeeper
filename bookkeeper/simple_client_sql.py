@@ -4,6 +4,7 @@
 
 from bookkeeper.models.category import Category
 from bookkeeper.models.expense import Expense
+from bookkeeper.models.budget import Budget
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
 from bookkeeper.utils import read_tree
 
@@ -11,6 +12,9 @@ cat_repo = SQLiteRepository[Category](db_file="database/simple-client-sql.db",
                                       cls=Category)
 exp_repo = SQLiteRepository[Expense](db_file="database/simple-client-sql.db",
                                      cls=Expense)
+budget_repo = SQLiteRepository[Budget](db_file="database/simple-client-sql.db",
+                                     cls=Budget)
+
 if len(cat_repo.get_all()) == 0:
     cats = '''
     продукты
@@ -24,6 +28,10 @@ if len(cat_repo.get_all()) == 0:
 
     Category.create_from_tree(read_tree(cats), cat_repo)
 
+if len(budget_repo.get_all(where={"period":"day"})) == 0:
+    day_budget = Budget(period="day", limitation=3000, spent=0)
+    budget_repo.add(day_budget)
+
 while True:
     try:
         cmd = input('$> ')
@@ -33,6 +41,8 @@ while True:
         continue
     if cmd == 'категории':
         print(*cat_repo.get_all(), sep='\n')
+    elif cmd == 'бюджет':
+        print(*budget_repo.get_all(), sep='\n')
     elif cmd == 'расходы':
         print(*exp_repo.get_all(), sep='\n')
     elif cmd[0].isdecimal():
@@ -44,4 +54,6 @@ while True:
             continue
         exp = Expense(int(amount), cat.pk)
         exp_repo.add(exp)
-        print(exp)
+        for budget in budget_repo.get_all():
+            budget.update_spent(exp_repo)
+            budget_repo.update(budget)
