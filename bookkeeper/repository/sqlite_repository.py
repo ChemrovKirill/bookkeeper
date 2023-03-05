@@ -79,6 +79,11 @@ class SQLiteRepository(AbstractRepository[T]):
         con.close()
         return [self._row2obj(r[0], r[1:]) for r in rows]
 
+    def get_all_like(self, like: dict[str, str]) -> list[T]:
+        values = [f"%{v}%" for v in like.values()]
+        where = dict(zip(like.keys(), values))
+        return self.get_all(where=where)
+
     def update(self, obj: T) -> None:
         fields = ", ".join([f"{f}=?" for f in self.fields.keys()])
         values = [getattr(obj, f) for f in self.fields]

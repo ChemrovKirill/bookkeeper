@@ -24,8 +24,12 @@ cats = '''
 
 Category.create_from_tree(read_tree(cats), cat_repo)
 
-day_budget = Budget(limitation=3000, period="day", spent=0)
-budget_repo.add(day_budget)
+budget = Budget(period="day", limitation=1000, spent=0)
+budget_repo.add(budget)
+budget = Budget(period="week", limitation=7000, spent=0)
+budget_repo.add(budget)
+budget = Budget(period="month", limitation=30000, spent=0)
+budget_repo.add(budget)
 
 while True:
     try:
@@ -52,3 +56,4 @@ while True:
         print(exp)
         for budget in budget_repo.get_all():
             budget.update_spent(exp_repo)
+            budget_repo.update(budget)
