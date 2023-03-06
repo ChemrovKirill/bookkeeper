@@ -8,13 +8,14 @@ from bookkeeper.view.expenses import ExpensesTableGroup
 from bookkeeper.view.group_widgets import LabeledCheckBox
 from bookkeeper.view.palette_mode import PaletteMode
 from bookkeeper.models.category import Category
-from bookkeeper.view.categories_edit import CategoriesEditWindow
 
 
 class MainWindow(QtWidgets.QWidget):
-    def __init__(self, cats: list[Category], *args, **kwargs):
+    def __init__(self, budget_table: BudgetTableGroup,
+                       new_expense: NewExpenseGroup,
+                       expenses_table: ExpensesTableGroup,
+                       *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.categories = cats
         self.vbox = QtWidgets.QVBoxLayout()
         self.setWindowTitle("Bookkeeper v0.2")
         self.theme = LabeledCheckBox("Темная тема", 
@@ -22,25 +23,15 @@ class MainWindow(QtWidgets.QWidget):
                                      chstate_func=self.change_theme)
         self.vbox.addWidget(self.theme, stretch=0.1, alignment=Qt.AlignRight)
         # Бюджет
-        self.budget_table = BudgetTableGroup()
+        self.budget_table = budget_table
         self.vbox.addWidget(self.budget_table, stretch=3)
         # Новая трата
-        self.new_expense = NewExpenseGroup(self.categories, self.cats_edit)
+        self.new_expense = new_expense
         self.vbox.addWidget(self.new_expense, stretch=1)
         # Расходы
-        self.expenses_table = ExpensesTableGroup()
+        self.expenses_table = expenses_table
         self.vbox.addWidget(self.expenses_table, stretch=6)
         self.setLayout(self.vbox)
-
-    def set_categories(self, cats: list[Category]) -> None:
-        self.categories = cats
-        self.new_expense.set_categories(self.categories)
-
-    def cats_edit(self):
-        self.window = CategoriesEditWindow(self.categories)
-        self.window.setWindowTitle("Редактирование категорий")
-        self.window.resize(600, 600)
-        self.window.show()
 
     def change_theme(self, status):
         app = QtWidgets.QApplication.instance()
@@ -54,6 +45,8 @@ class MainWindow(QtWidgets.QWidget):
         "Вы уверены?\nВсе несохраненные данные будут потеряны.")
         if reply == QtWidgets.QMessageBox.Yes:
             event.accept()
+            app = QtWidgets.QApplication.instance()
+            app.closeAllWindows()
         else:
             event.ignore()
 

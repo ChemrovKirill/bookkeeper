@@ -47,6 +47,7 @@ class LabeledComboBoxInput(QtWidgets.QWidget):
             self.combo_box.setPlaceholderText(items[0])
         else:
             self.combo_box.setPlaceholderText("")
+        self.clear()
 
 class GroupLabel(QtWidgets.QLabel):
     def __init__(self, text, *args, **kwargs):

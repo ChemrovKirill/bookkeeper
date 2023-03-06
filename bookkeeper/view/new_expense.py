@@ -5,10 +5,10 @@ from bookkeeper.models.category import Category
 
 class NewExpenseGroup(QtWidgets.QGroupBox):
     #categories = [f"Категория {2*i}" for i in range(11)]
-    def __init__(self, cats: list[Category], cats_edit, *args, **kwargs):
+    def __init__(self, cats: list[Category], cats_edit_show, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.categories = cats
-        self.cats_edit = cats_edit
+        self.cats_edit_show = cats_edit_show
         self.cat_names = [c.name for c in cats]
         self.grid = QtWidgets.QGridLayout()
         self.label = GroupLabel("<b>Новая трата</b>")
@@ -18,7 +18,7 @@ class NewExpenseGroup(QtWidgets.QGroupBox):
         self.category_input = LabeledComboBoxInput("Категория", self.cat_names)
         self.grid.addWidget(self.category_input,2,0,1,2)
         self.cats_edit_button = QtWidgets.QPushButton('Редактировать')
-        self.cats_edit_button.clicked.connect(self.cats_edit)
+        self.cats_edit_button.clicked.connect(self.cats_edit_show)
         self.grid.addWidget(self.cats_edit_button,2,2,1,1)
         self.submit_button = QtWidgets.QPushButton('Добавить')
         self.submit_button.clicked.connect(self.submit)
