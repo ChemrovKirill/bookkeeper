@@ -52,6 +52,7 @@ class Bookkeeper:
                 for child in cat.get_subcategories(self.category_rep):
                     if child.parent == cat.pk:
                         child.parent = cat.parent
+                        self.category_rep.update(child)
                 self.categories = self.category_rep.get_all()
                 self.view.set_categories(self.categories)        
                 return
