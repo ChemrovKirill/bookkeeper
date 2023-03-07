@@ -4,12 +4,14 @@ from collections.abc import Callable
 from PySide6 import QtWidgets
 
 from bookkeeper.models.category import Category
+from bookkeeper.models.expense import Expense
 from bookkeeper.view.main_window import MainWindow
 from bookkeeper.view.palette_mode import PaletteMode
 from bookkeeper.view.budget import BudgetTableGroup
 from bookkeeper.view.new_expense import NewExpenseGroup
 from bookkeeper.view.expenses import ExpensesTableGroup
 from bookkeeper.view.categories_edit import CategoriesEditWindow
+
 
 class AbstractView(Protocol):
 
@@ -46,7 +48,7 @@ class View:
         self.config_cats_edit()
         self.budget_table = BudgetTableGroup()
         self.new_expense = NewExpenseGroup(self.categories, self.cats_edit_show)
-        self.expenses_table = ExpensesTableGroup()
+        self.expenses_table = ExpensesTableGroup(self.catpk_to_name)
         self.config_main_window()
         
 
@@ -84,8 +86,18 @@ class View:
         self.new_expense.set_categories(self.categories)
         self.cats_edit_window.set_categories(self.categories)
 
-    def set_cat_modifier(self, handler: Callable[[Category], None]):
-        pass
+    def catpk_to_name(self, pk: int) -> str:
+        name = [c.name for c in self.categories if int(c.pk) == int(pk)]
+        if len(name):
+            return str(name[0])
+        return ""
+
+    def set_expenses(self, exps: list[Expense]) -> None:
+        self.expenses = exps
+        self.expenses_table.set_expenses(self.expenses)
+
+    # def set_cat_modifier(self, handler: Callable[[Category], None]):
+    #     pass
 
     def set_cat_adder(self, handler):
         """ устанавливает метод добавления категории (из bookkeeper_app)"""

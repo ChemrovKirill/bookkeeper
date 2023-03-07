@@ -4,7 +4,6 @@ from bookkeeper.view.group_widgets import GroupLabel, LabeledComboBoxInput, Labe
 from bookkeeper.models.category import Category
 
 class NewExpenseGroup(QtWidgets.QGroupBox):
-    #categories = [f"Категория {2*i}" for i in range(11)]
     def __init__(self, cats: list[Category], cats_edit_show, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.categories = cats

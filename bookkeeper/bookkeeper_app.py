@@ -2,6 +2,7 @@ from bookkeeper.view.view import AbstractView, View
 from bookkeeper.repository.abstract_repository import AbstractRepository
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
 from bookkeeper.models.category import Category
+from bookkeeper.models.expense import Expense
 
 class Bookkeeper:
     
@@ -18,6 +19,12 @@ class Bookkeeper:
         self.view.set_cat_adder(self.add_category)
         self.view.set_cat_deleter(self.delete_category)
         self.view.set_cat_checker(self.cat_checker)
+
+        self.expense_rep = repository_type[Expense](
+                           db_file="database/bookkeeper.db",
+                           cls=Expense)
+        self.expenses = self.expense_rep.get_all()
+        self.view.set_expenses(self.expenses)
 
     def start_app(self):
         self.view.show_main_window()
@@ -49,10 +56,10 @@ class Bookkeeper:
             if cat.name == cat_name:
                 self.category_rep.delete(cat.pk)
                 # меняет удаленную категорию на родителя (None если родителя нет)
-                for child in cat.get_subcategories(self.category_rep):
-                    if child.parent == cat.pk:
-                        child.parent = cat.parent
-                        self.category_rep.update(child)
+                for child in self.category_rep.get_all(where={'parent':cat.pk}):
+                    #if child.parent == cat.pk:
+                    child.parent = cat.parent
+                    self.category_rep.update(child)
                 self.categories = self.category_rep.get_all()
                 self.view.set_categories(self.categories)        
                 return
