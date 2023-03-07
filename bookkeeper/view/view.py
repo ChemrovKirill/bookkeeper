@@ -70,12 +70,13 @@ class View:
 
     def config_cats_edit(self):
         self.cats_edit_window = CategoriesEditWindow(self.categories, 
-                                                     self.add_category)
+                                                     self.add_category,
+                                                     self.delete_category)
         self.cats_edit_window.setWindowTitle("Редактирование категорий")
         self.cats_edit_window.resize(600, 600)
 
     def cats_edit_show(self):
-        self.config_cats_edit()
+        #self.config_cats_edit()
         self.cats_edit_window.show()
 
     def set_categories(self, cats: list[Category]) -> None:
@@ -90,6 +91,15 @@ class View:
         """ устанавливает метод добавления категории (из bookkeeper_app)"""
         self.cat_adder = handle_error(self.main_window, handler)
 
+    def set_cat_deleter(self, handler):
+        """ устанавливает метод удаления категории (из bookkeeper_app)"""
+        self.cat_deleter = handle_error(self.main_window, handler)
+
+    def set_cat_checker(self, handler):
+        """ устанавливает метод проверки существования категории (из bookkeeper_app)"""
+        self.cat_checker = handle_error(self.main_window, handler)
+        self.cats_edit_window.set_cat_checker(self.cat_checker)
+
     def add_category(self, name, parent):
         self.cat_adder(name, parent)
         # try:
@@ -97,7 +107,7 @@ class View:
         # except ValidationError as ex:
         #     QMessageBox.critical(self, 'Ошибка', str(ex))
 
-    def delete_category(self):
-        cat = ... # определить выбранную категорию
-        del_subcats, del_expenses = self.ask_del_cat()
-        self.cat_deleter(cat, del_subcats, del_expenses)
+    def delete_category(self, cat_name: str):
+        self.cat_deleter(cat_name)
+        # del_subcats, del_expenses = self.ask_del_cat()
+        # self.cat_deleter(cat, del_subcats, del_expenses)

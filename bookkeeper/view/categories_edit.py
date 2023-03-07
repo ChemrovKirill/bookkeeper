@@ -1,15 +1,16 @@
 
 from PySide6 import QtWidgets
+from collections.abc import Callable
 
 from bookkeeper.view.group_widgets import GroupLabel, LabeledComboBoxInput, LabeledLineInput
-
-# vvv temp vvv
 from bookkeeper.models.category import Category
 
 
 class CategoriesEditWindow(QtWidgets.QWidget):
+    cat_checker: Callable
+
     def __init__(self, cats: list[Category],
-                 cat_adder, *args, **kwargs):
+                 cat_adder, cat_deleter, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.grid = QtWidgets.QGridLayout()
         self.label = GroupLabel("<b>Список категорий</b>")
@@ -22,7 +23,7 @@ class CategoriesEditWindow(QtWidgets.QWidget):
         self.cat_del = LabeledComboBoxInput("Категория", [])
         self.grid.addWidget(self.cat_del, 3, 0, 1, 1)
         self.cat_del_button = QtWidgets.QPushButton('Удалить')
-        self.cat_del_button.clicked.connect(self.cat_del_func)
+        self.cat_del_button.clicked.connect(self.delete_category)
         self.grid.addWidget(self.cat_del_button, 3, 1, 1, 1)
         self.label = GroupLabel("<b>Добавление категории</b>")
         self.grid.addWidget(self.label, 4, 0, 1, 2)
@@ -35,6 +36,7 @@ class CategoriesEditWindow(QtWidgets.QWidget):
         self.grid.addWidget(self.cat_add_button, 6, 1, 1, 1)
         self.setLayout(self.grid)
         self.cat_adder = cat_adder
+        self.cat_deleter = cat_deleter
         self.set_categories(cats)
 
     def set_categories(self, cats: list[Category]):
@@ -44,19 +46,25 @@ class CategoriesEditWindow(QtWidgets.QWidget):
         self.cats_tree.clear()
         self.cats_tree.insertTopLevelItems(0, top_items)
         self.cat_del.set_items(self.cat_names)
-        self.cat_add_parent.set_items(self.cat_names
-                                      + ["Без родительской категории"])
+        self.cat_add_parent.set_items(["- Без родительской категории -"]
+                                                        + self.cat_names)
 
-    def cat_del_func(self):
-        print(f"Категория {self.cat_del.text()} удалена")
+    def delete_category(self):
+        #print(f"Категория {self.cat_del.text()} удалена")
+        self.cat_deleter(self.cat_del.text())
         self.cat_del.clear()
         # todo: upd cat tree view
 
+    def set_cat_checker(self, checker):
+        self.cat_checker = checker
+
     def add_category(self):
-        if self.cat_add_parent.text() == "Без родительской категории":
+        parent_name = self.cat_add_parent.text()
+        if parent_name == "- Без родительской категории -":
             self.cat_adder(self.cat_add_name.text(), None)
             #print(f"Категория '{self.cat_add_name.text()}' добавлена")
         else:
+            self.cat_checker(parent_name)
             self.cat_adder(self.cat_add_name.text(), self.cat_add_parent.text())
             # print(f"Подкатегория '{self.cat_add_name.text()}' категории" 
             #       + f"'{self.cat_add_parent.text()}' добавлена")

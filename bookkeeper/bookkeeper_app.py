@@ -16,20 +16,26 @@ class Bookkeeper:
         self.view.set_categories(self.categories)
         #self.view.set_cat_modifier(self.modify_cat)
         self.view.set_cat_adder(self.add_category)
+        self.view.set_cat_deleter(self.delete_category)
+        self.view.set_cat_checker(self.cat_checker)
 
     def start_app(self):
         self.view.show_main_window()
         
-    def modify_cat(self, cat: Category) -> None:
-        self.category_rep.update(cat)
-        self.view.set_categories(self.categories)
+    # def modify_cat(self, cat: Category) -> None:
+    #     self.category_rep.update(cat)
+    #     self.view.set_categories(self.categories)
+
+    def cat_checker(self, cat_name: str):
+        if cat_name not in [c.name for c in self.categories]:
+            raise ValueError(f'Категории "{cat_name}" не существует')
 
     def add_category(self, name, parent):
         if name in [c.name for c in self.categories]:
-            raise ValueError(f'Категория {name} уже существует')
+            raise ValueError(f'Категория "{name}" уже существует')
         if parent is not None:
             if parent not in [c.name for c in self.categories]:
-                raise ValueError(f'Категории {parent} не существует')
+                raise ValueError(f'Категории "{parent}" не существует')
             parent_pk = self.category_rep.get_all(where={'name':parent})[0].pk
         else:
             parent_pk = None
@@ -37,6 +43,21 @@ class Bookkeeper:
         self.category_rep.add(cat)
         self.categories.append(cat)
         self.view.set_categories(self.categories)
+
+    def delete_category(self, cat_name: str):
+        for cat in self.categories:
+            if cat.name == cat_name:
+                self.category_rep.delete(cat.pk)
+                # меняет удаленную категорию на родителя (None если родителя нет)
+                for child in cat.get_subcategories(self.category_rep):
+                    if child.parent == cat.pk:
+                        child.parent = cat.parent
+                self.categories = self.category_rep.get_all()
+                self.view.set_categories(self.categories)        
+                return
+        raise ValueError(f'Категории "{cat_name}" не существует')
+
+        
 
 
 if __name__ == '__main__':
