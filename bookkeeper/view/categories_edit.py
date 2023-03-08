@@ -66,7 +66,7 @@ class CategoriesEditWindow(QtWidgets.QWidget):
             #print(f"Категория '{self.cat_add_name.text()}' добавлена")
         else:
             self.cat_checker(parent_name)
-            self.cat_adder(self.cat_add_name.text(), self.cat_add_parent.text())
+            self.cat_adder(self.cat_add_name.text().lower(), self.cat_add_parent.text())
             # print(f"Подкатегория '{self.cat_add_name.text()}' категории" 
             #       + f"'{self.cat_add_parent.text()}' добавлена")
         self.cat_add_name.clear()

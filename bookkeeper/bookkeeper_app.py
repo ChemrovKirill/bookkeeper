@@ -85,8 +85,6 @@ class Bookkeeper:
         self.expenses = self.expense_rep.get_all()
         self.view.set_expenses(self.expenses)
         self.update_budgets()
-        if len([b for b in self.budgets if b.spent > b.limitation]):
-            self.view.death()
 
     def add_expense(self, amount: str, cat_name: str, comment: str=""):
         try:
@@ -104,6 +102,8 @@ class Bookkeeper:
         new_exp = Expense(amount, cat.pk, comment=comment)
         self.expense_rep.add(new_exp)
         self.update_expenses()
+        if len([b for b in self.budgets if b.spent > b.limitation]):
+            self.view.death()
 
     def modify_expense(self, pk, attr, new_val):
         exp = self.expense_rep.get(pk)

@@ -91,4 +91,4 @@ class ExpensesTableGroup(QtWidgets.QGroupBox):
             start = ch_range.topRow()
             end = min(ch_range.bottomRow(), len(self.data))
             pks_to_del += [i[-1] for i in self.data[start:end+1]]
-        self.exp_deleter(pks_to_del)
+        self.exp_deleter(set(pks_to_del))
