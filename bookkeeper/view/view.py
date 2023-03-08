@@ -138,7 +138,17 @@ class View:
         self.exp_adder(amount, cat_name, comment)
 
     def delete_expenses(self, exp_pks: list[int]):
-        self.exp_deleter(exp_pks)
+        if len(exp_pks) == 0:
+            QtWidgets.QMessageBox.critical(self.main_window, 
+                            'Ошибка', 
+                            'Траты для удаления не выбраны.')
+        else:
+            reply = QtWidgets.QMessageBox.question(self.main_window, 
+                    'Удаление трат',
+                    'Вы уверены, что хотите удалить все выбранные траты?')
+            if reply == QtWidgets.QMessageBox.Yes:
+                self.exp_deleter(exp_pks)
+        
 
     def modify_expense(self, pk, attr, new_val):
         self.exp_modifier(pk, attr, new_val)

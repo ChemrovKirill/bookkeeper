@@ -133,10 +133,8 @@ class Bookkeeper:
         self.expense_rep.update(exp)
         self.update_expenses()
 
-    def delete_expenses(self, exps_pk: list[int]):
-        if len(exps_pk) == 0:
-            raise ValueError(f'Траты для удаления не выбраны.')
-        for pk in exps_pk:
+    def delete_expenses(self, exp_pks: list[int]):
+        for pk in exp_pks:
             self.expense_rep.delete(pk)
         self.update_expenses()
 
