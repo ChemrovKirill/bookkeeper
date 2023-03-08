@@ -13,17 +13,19 @@ class NewExpenseGroup(QtWidgets.QGroupBox):
         self.exp_adder = exp_adder
         self.grid = QtWidgets.QGridLayout()
         self.label = GroupLabel("<b>Новая трата</b>")
-        self.grid.addWidget(self.label,0,0,1,3)
+        self.grid.addWidget(self.label, 0, 0, 1, 5)
         self.amount_input = LabeledLineInput("Сумма", "0")
-        self.grid.addWidget(self.amount_input,1,0,1,2)
+        self.grid.addWidget(self.amount_input, 1, 0, 1, 4)
         self.category_input = LabeledComboBoxInput("Категория", [])
-        self.grid.addWidget(self.category_input,2,0,1,2)
+        self.grid.addWidget(self.category_input, 2, 0, 1, 4)
         self.cats_edit_button = QtWidgets.QPushButton('Редактировать')
         self.cats_edit_button.clicked.connect(self.cats_edit_show)
-        self.grid.addWidget(self.cats_edit_button,2,2,1,1)
+        self.grid.addWidget(self.cats_edit_button, 2, 4, 1, 1)
+        self.comment_input = LabeledLineInput("Комментарий", "")
+        self.grid.addWidget(self.comment_input, 3, 0, 1, 4)
         self.submit_button = QtWidgets.QPushButton('Добавить')
         self.submit_button.clicked.connect(self.add_expense)
-        self.grid.addWidget(self.submit_button,3,0,1,2)
+        self.grid.addWidget(self.submit_button, 4, 0, 1, 5)
         self.setLayout(self.grid)
         self.set_categories(cats)
     
@@ -34,6 +36,9 @@ class NewExpenseGroup(QtWidgets.QGroupBox):
 
     def add_expense(self):
         #print(f"Новая трата в категории {self.category_input.text()} на сумму {self.amount_input.text()} добавлена")
-        self.exp_adder(self.amount_input.text(), self.category_input.text())
+        self.exp_adder(self.amount_input.text(), 
+                       self.category_input.text(), 
+                       comment=self.comment_input.text())
         self.amount_input.clear()
         self.category_input.clear()
+        self.comment_input.clear()

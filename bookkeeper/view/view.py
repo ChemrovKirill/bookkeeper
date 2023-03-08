@@ -70,7 +70,7 @@ class View:
         self.main_window = MainWindow(self.budget_table, 
                                       self.new_expense, 
                                       self.expenses_table)
-        self.main_window.resize(800, 800)
+        self.main_window.resize(1000, 800)
 
     def config_cats_edit(self):
         self.cats_edit_window = CategoriesEditWindow(self.categories, 
@@ -130,5 +130,5 @@ class View:
         """ устанавливает метод добавления траты (из bookkeeper_app)"""
         self.exp_adder = handle_error(self.main_window, handler)
 
-    def add_expense(self, amount: str, cat_name: str):
-        self.exp_adder(amount, cat_name)
+    def add_expense(self, amount: str, cat_name: str, comment: str = ""):
+        self.exp_adder(amount, cat_name, comment)

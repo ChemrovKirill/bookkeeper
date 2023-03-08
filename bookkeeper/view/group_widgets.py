@@ -9,7 +9,7 @@ class LabeledLineInput(QtWidgets.QWidget):
         self.label = QtWidgets.QLabel(text)
         self.layout.addWidget(self.label, stretch=1)
         self.input = QtWidgets.QLineEdit(self.placeholder)
-        self.layout.addWidget(self.input, stretch=5)
+        self.layout.addWidget(self.input, stretch=4)
         self.setLayout(self.layout)
 
     def clear(self):
@@ -30,7 +30,7 @@ class LabeledComboBoxInput(QtWidgets.QWidget):
         self.combo_box.view().setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.combo_box.setMaxVisibleItems(16)
         self.set_items(items)
-        self.layout.addWidget(self.combo_box, stretch=5)
+        self.layout.addWidget(self.combo_box, stretch=4)
         self.setLayout(self.layout)
 
     def clear(self):

@@ -22,7 +22,7 @@ class ExpensesTableWidget(QtWidgets.QTableWidget):
             3, QtWidgets.QHeaderView.Stretch)
         self.setEditTriggers(
             QtWidgets.QAbstractItemView.DoubleClicked)
-        self.verticalHeader().hide()
+        #self.verticalHeader().hide()
 
     def add_data(self, data: list[list[str]]):
         for i, row in enumerate(data):

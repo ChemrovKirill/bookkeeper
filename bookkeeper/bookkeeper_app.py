@@ -72,7 +72,7 @@ class Bookkeeper:
         self.expenses = self.expense_rep.get_all()
         self.view.set_expenses(self.expenses)     
         
-    def add_expense(self, amount: str, cat_name: str):
+    def add_expense(self, amount: str, cat_name: str, comment: str=""):
         amount = int(amount)
         if amount <= 0:
             raise ValueError(f'Удачная покупка! Записывать не буду.')
@@ -81,7 +81,7 @@ class Bookkeeper:
             raise ValueError(f'Категории "{cat_name}" не существует')
         else:
             cat = cat[0]
-        new_exp = Expense(amount, cat.pk)
+        new_exp = Expense(amount, cat.pk, comment=comment)
         self.expense_rep.add(new_exp)
         self.expenses = self.expense_rep.get_all()
         self.view.set_expenses(self.expenses)
