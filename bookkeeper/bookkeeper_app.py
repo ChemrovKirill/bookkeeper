@@ -25,6 +25,7 @@ class Bookkeeper:
                            cls=Expense)
         self.expenses = self.expense_rep.get_all()
         self.view.set_expenses(self.expenses)
+        self.view.set_exp_adder(self.add_expense)
 
     def start_app(self):
         self.view.show_main_window()
@@ -52,19 +53,38 @@ class Bookkeeper:
         self.view.set_categories(self.categories)
 
     def delete_category(self, cat_name: str):
-        for cat in self.categories:
-            if cat.name == cat_name:
-                self.category_rep.delete(cat.pk)
-                # меняет удаленную категорию на родителя (None если родителя нет)
-                for child in self.category_rep.get_all(where={'parent':cat.pk}):
-                    #if child.parent == cat.pk:
-                    child.parent = cat.parent
-                    self.category_rep.update(child)
-                self.categories = self.category_rep.get_all()
-                self.view.set_categories(self.categories)        
-                return
-        raise ValueError(f'Категории "{cat_name}" не существует')
-
+        cat = self.category_rep.get_all(where={"name":cat_name})
+        if len(cat) == 0:
+            raise ValueError(f'Категории "{cat_name}" не существует')
+        else:
+            cat = cat[0]
+        self.category_rep.delete(cat.pk)
+        # меняет удаленную категорию на родителя (None если родителя нет)
+        for child in self.category_rep.get_all(where={'parent':cat.pk}):
+            child.parent = cat.parent
+            self.category_rep.update(child)
+        self.categories = self.category_rep.get_all()
+        self.view.set_categories(self.categories)
+        # устанавливает None вместо удаленной категории
+        for exp in self.expense_rep.get_all(where={'category':cat.pk}):
+            exp.category = None
+            self.expense_rep.update(exp)
+        self.expenses = self.expense_rep.get_all()
+        self.view.set_expenses(self.expenses)     
+        
+    def add_expense(self, amount: str, cat_name: str):
+        amount = int(amount)
+        if amount <= 0:
+            raise ValueError(f'Удачная покупка! Записывать не буду.')
+        cat = self.category_rep.get_all(where={"name":cat_name})
+        if len(cat) == 0:
+            raise ValueError(f'Категории "{cat_name}" не существует')
+        else:
+            cat = cat[0]
+        new_exp = Expense(amount, cat.pk)
+        self.expense_rep.add(new_exp)
+        self.expenses = self.expense_rep.get_all()
+        self.view.set_expenses(self.expenses)
         
 
 

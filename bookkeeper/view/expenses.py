@@ -40,7 +40,6 @@ class ExpensesTableGroup(QtWidgets.QGroupBox):
         self.label = GroupLabel("<b>Последние траты</b>")
         self.vbox.addWidget(self.label)
         self.table = ExpensesTableWidget()
-        #self.table.add_data(self.data)
         self.vbox.addWidget(self.table)
         self.setLayout(self.vbox)
 
@@ -53,14 +52,14 @@ class ExpensesTableGroup(QtWidgets.QGroupBox):
     def exps_to_data(self, exps: list[Expense]):
         self.data = []
         for exp in exps:
-            data_item = ["","","",""]
+            item = ["","","",""]
             if exp.expense_date:
-                data_item[0] = str(exp.expense_date)
+                item[0] = str(exp.expense_date)
             if exp.amount:
-                data_item[1] = str(exp.amount)
+                item[1] = str(exp.amount)
             if exp.category:
-                data_item[2] = str(
+                item[2] = str(
                     self.catpk_to_name(exp.category))
             if exp.comment:
-                data_item[3] = str(exp.comment)
-            self.data.append(data_item)
+                item[3] = str(exp.comment)
+            self.data.append(item)
