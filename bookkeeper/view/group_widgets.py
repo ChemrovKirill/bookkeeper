@@ -14,6 +14,9 @@ class LabeledLineInput(QtWidgets.QWidget):
 
     def clear(self):
         self.input.setText(self.placeholder)
+    
+    def set_text(self, text: str) -> None:
+        self.input.setText(text)
 
     def text(self):
         return self.input.text()
@@ -38,6 +41,9 @@ class LabeledComboBoxInput(QtWidgets.QWidget):
 
     def text(self):
         return self.combo_box.currentText()
+
+    def set_text(self, text: str) -> None:
+        self.combo_box.setCurrentText(text)
 
     def set_items(self, items: list[str]):
         self.items = items

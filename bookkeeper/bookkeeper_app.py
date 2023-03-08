@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from bookkeeper.view.view import AbstractView, View
 from bookkeeper.repository.abstract_repository import AbstractRepository
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
@@ -26,6 +28,8 @@ class Bookkeeper:
         self.expenses = self.expense_rep.get_all()
         self.view.set_expenses(self.expenses)
         self.view.set_exp_adder(self.add_expense)
+        self.view.set_exp_deleter(self.delete_expenses)
+        self.view.set_exp_modifier(self.modify_expense)
 
     def start_app(self):
         self.view.show_main_window()
@@ -76,7 +80,7 @@ class Bookkeeper:
         amount = int(amount)
         if amount <= 0:
             raise ValueError(f'Удачная покупка! Записывать не буду.')
-        cat = self.category_rep.get_all(where={"name":cat_name})
+        cat = self.category_rep.get_all(where={"name":cat_name.lower()})
         if len(cat) == 0:
             raise ValueError(f'Категории "{cat_name}" не существует')
         else:
@@ -85,7 +89,38 @@ class Bookkeeper:
         self.expense_rep.add(new_exp)
         self.expenses = self.expense_rep.get_all()
         self.view.set_expenses(self.expenses)
-        
+
+    def modify_expense(self, pk, attr, new_val):
+        exp = self.expense_rep.get(pk)
+        if attr == "category":
+            new_val = new_val.lower()
+            if new_val not in [c.name for c in self.categories]:
+                self.view.set_expenses(self.expenses)
+                raise ValueError(f'Категории "{new_val}" не существует')
+            new_val = self.category_rep.get_all(where={'name':new_val})[0].pk
+        if attr == "amount":
+            if int(new_val) <= 0:
+                self.view.set_expenses(self.expenses)
+                raise ValueError(f'Удачная покупка! Записывать не буду.')
+        if attr == "expense_date":
+            try:
+                new_val = datetime.fromisoformat(new_val).isoformat(
+                                            sep='\t', timespec='minutes')
+            except ValueError:
+                self.view.set_expenses(self.expenses)
+                raise ValueError(f'Неправильный формат даты.')
+        setattr(exp, attr, new_val)
+        self.expense_rep.update(exp)
+        self.expenses = self.expense_rep.get_all()
+        self.view.set_expenses(self.expenses)
+
+    def delete_expenses(self, exps_pk: list[int]):
+        if len(exps_pk) == 0:
+            raise ValueError(f'Траты для удаления не выбраны.')
+        for pk in exps_pk:
+            self.expense_rep.delete(pk)
+        self.expenses = self.expense_rep.get_all()
+        self.view.set_expenses(self.expenses)
 
 
 if __name__ == '__main__':

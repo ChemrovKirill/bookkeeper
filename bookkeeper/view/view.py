@@ -50,7 +50,9 @@ class View:
         self.new_expense = NewExpenseGroup(self.categories, 
                                            self.cats_edit_show,
                                            self.add_expense)
-        self.expenses_table = ExpensesTableGroup(self.catpk_to_name)
+        self.expenses_table = ExpensesTableGroup(self.catpk_to_name,
+                                                 self.modify_expense,
+                                                 self.delete_expenses)
         self.config_main_window()
         
 
@@ -129,6 +131,20 @@ class View:
     def set_exp_adder(self, handler):
         """ устанавливает метод добавления траты (из bookkeeper_app)"""
         self.exp_adder = handle_error(self.main_window, handler)
+
+    def set_exp_deleter(self, handler):
+        """ устанавливает метод удаления трат (из bookkeeper_app)"""
+        self.exp_deleter = handle_error(self.main_window, handler)
+
+    def set_exp_modifier(self, handler):
+        """ устанавливает метод изменения траты (из bookkeeper_app)"""
+        self.exp_modifier = handle_error(self.main_window, handler)
+
+    def delete_expenses(self, exp_pks: list[int]):
+        self.exp_deleter(exp_pks)
+
+    def modify_expense(self, pk, attr, new_val):
+        self.exp_modifier(pk, attr, new_val)
 
     def add_expense(self, amount: str, cat_name: str, comment: str = ""):
         self.exp_adder(amount, cat_name, comment)

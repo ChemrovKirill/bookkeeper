@@ -17,6 +17,7 @@ class CategoriesEditWindow(QtWidgets.QWidget):
         self.grid.addWidget(self.label, 0, 0, 1, 2)
         self.cats_tree = QtWidgets.QTreeWidget()
         self.cats_tree.setHeaderLabel("")
+        self.cats_tree.itemDoubleClicked.connect(self.double_clicked)
         self.grid.addWidget(self.cats_tree, 1, 0, 1, 2)
         self.label = GroupLabel("<b>Удаление категории</b>")
         self.grid.addWidget(self.label, 2, 0, 1, 2)
@@ -81,3 +82,7 @@ class CategoriesEditWindow(QtWidgets.QWidget):
             items.append(item)
         return items
         
+    def double_clicked(self, item, column):
+        clicked_cat_name = item.text(column)
+        self.cat_del.set_text(clicked_cat_name)
+        self.cat_add_parent.set_text(clicked_cat_name)
