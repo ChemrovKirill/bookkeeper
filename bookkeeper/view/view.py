@@ -5,6 +5,7 @@ from PySide6 import QtWidgets
 
 from bookkeeper.models.category import Category
 from bookkeeper.models.expense import Expense
+from bookkeeper.models.budget import Budget
 from bookkeeper.view.main_window import MainWindow
 from bookkeeper.view.palette_mode import PaletteMode
 from bookkeeper.view.budget import BudgetTableGroup
@@ -46,7 +47,7 @@ class View:
     def __init__(self):
         self.config_app()
         self.config_cats_edit()
-        self.budget_table = BudgetTableGroup()
+        self.budget_table = BudgetTableGroup(self.modify_budget)
         self.new_expense = NewExpenseGroup(self.categories, 
                                            self.cats_edit_show,
                                            self.add_expense)
@@ -82,7 +83,6 @@ class View:
         self.cats_edit_window.resize(600, 600)
 
     def cats_edit_show(self):
-        #self.config_cats_edit()
         self.cats_edit_window.show()
 
     def set_categories(self, cats: list[Category]) -> None:
@@ -114,15 +114,9 @@ class View:
 
     def add_category(self, name, parent):
         self.cat_adder(name, parent)
-        # try:
-        #     self.cat_adder(name, parent)
-        # except ValidationError as ex:
-        #     QMessageBox.critical(self, 'Ошибка', str(ex))
 
     def delete_category(self, cat_name: str):
         self.cat_deleter(cat_name)
-        # del_subcats, del_expenses = self.ask_del_cat()
-        # self.cat_deleter(cat, del_subcats, del_expenses)
 
     def set_expenses(self, exps: list[Expense]) -> None:
         self.expenses = exps
@@ -140,11 +134,28 @@ class View:
         """ устанавливает метод изменения траты (из bookkeeper_app)"""
         self.exp_modifier = handle_error(self.main_window, handler)
 
+    def add_expense(self, amount: str, cat_name: str, comment: str = ""):
+        self.exp_adder(amount, cat_name, comment)
+
     def delete_expenses(self, exp_pks: list[int]):
         self.exp_deleter(exp_pks)
 
     def modify_expense(self, pk, attr, new_val):
         self.exp_modifier(pk, attr, new_val)
 
-    def add_expense(self, amount: str, cat_name: str, comment: str = ""):
-        self.exp_adder(amount, cat_name, comment)
+    def set_budgets(self, budgets: list[Budget]) -> None:
+        self.budgets = budgets
+        self.budget_table.set_budgets(self.budgets)
+
+    def set_bdg_modifier(self, handler):
+        """ устанавливает метод изменения бюджета (из bookkeeper_app)"""
+        self.bdg_modifier = handle_error(self.main_window, handler)
+
+    def modify_budget(self, pk: int, new_limit: str, period: str):
+        self.bdg_modifier(pk, new_limit, period)
+
+    def death(self):
+        msg = "С добавлением этой траты нить вашей судьбы обрывается. " \
+            + "Отмените последнюю покупку, чтобы восстановить течение судьбы," \
+            + " или живите дальше в проклятом мире, который сами и создали."
+        QtWidgets.QMessageBox.warning(self.main_window, 'ПОТРАЧЕНО', msg)

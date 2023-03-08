@@ -7,7 +7,6 @@ from bookkeeper.view.new_expense import NewExpenseGroup
 from bookkeeper.view.expenses import ExpensesTableGroup
 from bookkeeper.view.group_widgets import LabeledCheckBox
 from bookkeeper.view.palette_mode import PaletteMode
-from bookkeeper.models.category import Category
 
 
 class MainWindow(QtWidgets.QWidget):
@@ -49,24 +48,3 @@ class MainWindow(QtWidgets.QWidget):
             app.closeAllWindows()
         else:
             event.ignore()
-
-# class MainWindow(QtWidgets.QMainWindow):
-#     def __init__(self, *arg):
-#         super().__init__()
-#         self.setWindowTitle("Bookkeeper v0.1")
-#         self.main_widget = MainWidget()
-#         self.setCentralWidget(self.main_widget)
-
-#         # toolbar = QtWidgets.QToolBar("My main toolbar")
-#         # button_action = QAction("toolBar", self)
-#         # button_action.triggered.connect(lambda s: print(s))
-#         # toolbar.addAction(button_action)
-#         # self.addToolBar(toolbar)
-
-#         #menu = self.menuBar().addMenu("menuBar")
-#         # menu.addAction(button_action)
-
-#         self.setStatusBar(QtWidgets.QStatusBar(self))
-#         self.statusBar().setStatusTip("bookkeeper v0.1")
-
-
