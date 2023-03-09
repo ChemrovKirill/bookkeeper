@@ -152,7 +152,6 @@ class Bookkeeper:
                 self.budget_rep.delete(pk)
             self.update_budgets()
             return
-        else 
         try:
             new_limit = int(new_limit)
         except ValueError:
