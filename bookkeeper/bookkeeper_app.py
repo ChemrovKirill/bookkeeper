@@ -105,7 +105,7 @@ class Bookkeeper:
         if len([b for b in self.budgets if b.spent > b.limitation]):
             self.view.death()
 
-    def modify_expense(self, pk, attr, new_val):
+    def modify_expense(self, pk: int, attr: str, new_val: str):
         exp = self.expense_rep.get(pk)
         if attr == "category":
             new_val = new_val.lower()
