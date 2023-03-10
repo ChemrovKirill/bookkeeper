@@ -83,6 +83,9 @@ def test_delete_expenses(qtbot):
                 QtWidgets.QTableWidgetSelectionRange(1,1,2,2), True)
     widget.table.setRangeSelected(
                 QtWidgets.QTableWidgetSelectionRange(1,3,3,4), True)
-    widget.delete_expenses()
+    qtbot.mouseClick(
+            widget.del_button,
+            qt_api.QtCore.Qt.MouseButton.LeftButton
+        )
     assert exp_deleter.was_called == True
     
