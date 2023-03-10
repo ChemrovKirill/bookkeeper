@@ -170,7 +170,7 @@ class View:
     def add_expense(self, amount: str, cat_name: str, comment: str = ""):
         self.exp_adder(amount, cat_name, comment)
 
-    def delete_expenses(self, exp_pks: list[int]):
+    def delete_expenses(self, exp_pks: set[int]) -> None:
         if len(exp_pks) == 0:
             QtWidgets.QMessageBox.critical(self.main_window, 
                             'Ошибка', 
