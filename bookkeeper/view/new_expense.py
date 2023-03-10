@@ -18,12 +18,12 @@ class NewExpenseGroup(QtWidgets.QGroupBox):
         self.grid.addWidget(self.amount_input, 1, 0, 1, 4)
         self.category_input = LabeledComboBoxInput("Категория", [])
         self.grid.addWidget(self.category_input, 2, 0, 1, 4)
-        self.cats_edit_button = QtWidgets.QPushButton('Редактировать')
+        self.cats_edit_button = QtWidgets.QPushButton("Редактировать")
         self.cats_edit_button.clicked.connect(self.cats_edit_show)
         self.grid.addWidget(self.cats_edit_button, 2, 4, 1, 1)
         self.comment_input = LabeledLineInput("Комментарий", "")
         self.grid.addWidget(self.comment_input, 3, 0, 1, 4)
-        self.submit_button = QtWidgets.QPushButton('Добавить')
+        self.submit_button = QtWidgets.QPushButton("Добавить")
         self.submit_button.clicked.connect(self.add_expense)
         self.grid.addWidget(self.submit_button, 4, 0, 1, 5)
         self.setLayout(self.grid)
@@ -35,7 +35,6 @@ class NewExpenseGroup(QtWidgets.QGroupBox):
         self.category_input.set_items(self.cat_names)
 
     def add_expense(self):
-        #print(f"Новая трата в категории {self.category_input.text()} на сумму {self.amount_input.text()} добавлена")
         self.exp_adder(self.amount_input.text(), 
                        self.category_input.text(), 
                        comment=self.comment_input.text())
