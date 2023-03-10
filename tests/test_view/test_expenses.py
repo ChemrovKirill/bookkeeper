@@ -3,7 +3,6 @@
 """
 
 from pytestqt.qt_compat import qt_api
-from PySide6.QtCore import Qt
 from PySide6 import QtWidgets
 
 from bookkeeper.view.expenses import ExpensesTableWidget, ExpensesTableGroup
@@ -19,6 +18,7 @@ exp_deleter = lambda exp_pks: None
 def test_create_widget(qtbot):
     widget = ExpensesTableWidget(exp_modifier)
     qtbot.addWidget(widget)
+    assert widget.exp_modifier == exp_modifier
 
 def test_add_data(qtbot):
     widget = ExpensesTableWidget(exp_modifier)
@@ -49,6 +49,8 @@ def test_create_group(qtbot):
                                 exp_modifier, 
                                 exp_deleter)
     qtbot.addWidget(widget)
+    assert widget.catpk_to_name == catpk_to_name
+    assert widget.exp_deleter == exp_deleter
 
 def test_set_expenses(qtbot):
     widget = ExpensesTableGroup(catpk_to_name, 

@@ -2,7 +2,6 @@
 Тесты GUI для модуля с таблицей бюджетов
 """
 
-from pytestqt.qt_compat import qt_api
 from PySide6.QtCore import Qt
 from PySide6 import QtWidgets
 
@@ -17,6 +16,7 @@ bdg_modifier = lambda pk, new_limit, period: None
 def test_create_widget(qtbot):
     widget = BudgetTableWidget(bdg_modifier)
     qtbot.addWidget(widget)
+    assert widget.bdg_modifier == bdg_modifier
 
 def test_add_data(qtbot):
     widget = BudgetTableWidget(bdg_modifier)
