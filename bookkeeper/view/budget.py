@@ -11,16 +11,16 @@ class BudgetTableWidget(QtWidgets.QTableWidget):
         self.bdg_modifier = bdg_modifier
         self.setColumnCount(3)
         self.setRowCount(3)
+        self.row_to_period = {0:"day", 1:"week", 2:"month"}
         hheaders = "Бюджет Потрачено Остаток".split()
         self.setHorizontalHeaderLabels(hheaders)
         vheaders = "День Неделя Месяц".split()
         self.setVerticalHeaderLabels(vheaders)
         for h in [self.horizontalHeader(), self.verticalHeader(),]:
-            h.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)     
+            h.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)   
         self.setEditTriggers(
             QtWidgets.QAbstractItemView.DoubleClicked)
         self.cellDoubleClicked.connect(self.double_click)
-        #self.verticalHeader().hide()
 
     def double_click(self, row, columns):
         self.cellChanged.connect(self.cell_changed)
@@ -29,8 +29,7 @@ class BudgetTableWidget(QtWidgets.QTableWidget):
         self.cellChanged.disconnect(self.cell_changed)
         pk = self.data[row][-1]
         new_limit = self.item(row, column).text()
-        row_to_period = {0:"day", 1:"week", 2:"month"}
-        self.bdg_modifier(pk, new_limit, row_to_period[row])
+        self.bdg_modifier(pk, new_limit, self.row_to_period[row])
 
     def add_data(self, data: list[list[str]]):
         self.data = data
@@ -56,7 +55,6 @@ class BudgetTableGroup(QtWidgets.QGroupBox):
         self.label = GroupLabel("<b>Бюджет</b>")
         self.vbox.addWidget(self.label)
         self.table = BudgetTableWidget(bdg_modifier)
-        #self.table.add_data(self.data)
         self.vbox.addWidget(self.table)
         self.setLayout(self.vbox)
 

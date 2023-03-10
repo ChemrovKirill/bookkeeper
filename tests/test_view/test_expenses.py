@@ -1,7 +1,7 @@
 """
 Тесты GUI для модуля с таблицей расходов
 """
-#import pytest
+
 from pytestqt.qt_compat import qt_api
 from PySide6.QtCore import Qt
 from PySide6 import QtWidgets
@@ -38,6 +38,8 @@ def test_cell_changed(qtbot):
     widget = ExpensesTableWidget(exp_modifier)
     qtbot.addWidget(widget)
     widget.add_data(test_data)
+    widget.cellChanged.emit(0,0)
+    assert exp_modifier.was_called == False
     widget.cellDoubleClicked.emit(0,0)
     widget.cellChanged.emit(0,0)
     assert exp_modifier.was_called == True
@@ -63,6 +65,7 @@ def test_set_expenses(qtbot):
         assert str(exp.amount) == w_data[1]
         assert catpk_to_name(exp.category) == w_data[2]
         assert str(exp.comment) == w_data[3]
+        assert exp.pk == w_data[4]
 
 def test_delete_expenses(qtbot):
     def exp_deleter(exp_pks):
