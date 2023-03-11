@@ -5,7 +5,8 @@
 from pytestqt.qt_compat import qt_api
 from PySide6 import QtWidgets
 
-from bookkeeper.view.expenses import ExpensesTableWidget, ExpensesTableGroup
+from bookkeeper.view.expenses import ExpensesTableWidget, \
+                                     ExpensesTableGroup
 from bookkeeper.models.expense import Expense
 
 test_data = [["1_1", "1_2", "1_3", "1_4", 1],
