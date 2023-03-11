@@ -10,6 +10,8 @@ from bookkeeper.view.palette_mode import PaletteMode
 
 
 class MainWindow(QtWidgets.QWidget):
+    is_dark_mode: bool = True
+
     def __init__(self, budget_table: BudgetTableGroup,
                        new_expense: NewExpenseGroup,
                        expenses_table: ExpensesTableGroup,
@@ -35,8 +37,10 @@ class MainWindow(QtWidgets.QWidget):
     def change_theme(self, status):
         app = QtWidgets.QApplication.instance()
         if(self.theme.check_box.isChecked()):
+            self.is_dark_mode = True
             app.setPalette(PaletteMode(is_dark_mode=True))
         else:
+            self.is_dark_mode = False
             app.setPalette(PaletteMode(is_dark_mode=False))
 
     def closeEvent(self, event):

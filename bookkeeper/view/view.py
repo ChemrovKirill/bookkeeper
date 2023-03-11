@@ -54,11 +54,6 @@ class AbstractView(Protocol):
         pass
 
 
-        self.view.set_exp_adder(self.add_expense)
-        self.view.set_exp_deleter(self.delete_expenses)
-        self.view.set_exp_modifier(self.modify_expense)
-
-
 def handle_error(widget, handler):
     def inner(*args, **kwargs):
         try:
@@ -92,7 +87,7 @@ class View:
 
     def show_main_window(self):
         self.main_window.show()
-        print("run app")
+        print("Application is run")
         print(f"Application ends with exit status {self.app.exec()}")
         sys.exit()
     
@@ -106,14 +101,14 @@ class View:
         self.main_window = MainWindow(self.budget_table, 
                                       self.new_expense, 
                                       self.expenses_table)
-        self.main_window.resize(1000, 800)
+        self.main_window.resize(600, 800)
 
     def config_cats_edit(self):
         self.cats_edit_window = CategoriesEditWindow(self.categories, 
                                                      self.add_category,
                                                      self.delete_category)
         self.cats_edit_window.setWindowTitle("Редактирование категорий")
-        self.cats_edit_window.resize(600, 600)
+        self.cats_edit_window.resize(500, 500)
 
     def cats_edit_show(self):
         self.cats_edit_window.show()
