@@ -1,26 +1,19 @@
 from datetime import datetime
 
-from bookkeeper.view.view import View
 from bookkeeper.view.abstract_view import AbstractView
-from bookkeeper.repository.abstract_repository import AbstractRepository
-from bookkeeper.repository.sqlite_repository import SQLiteRepository
+from bookkeeper.repository.abstract_repository import AbstractRepository, repository_factory
 from bookkeeper.models.category import Category
 from bookkeeper.models.expense import Expense
 from bookkeeper.models.budget import Budget
-
-from PySide6 import QtWidgets
-import sys
 
 
 class Bookkeeper:
     
     def __init__(self,
                  view: AbstractView,
-                 repository_type: type):
+                 repository_factory):
         self.view = view
-        self.category_rep = repository_type[Category](
-                            db_file="database/bookkeeper.db",
-                            cls=Category)
+        self.category_rep = repository_factory(Category)
         self.categories = self.category_rep.get_all()
         self.view.set_categories(self.categories)
         #self.view.set_cat_modifier(self.modify_cat)
@@ -28,14 +21,10 @@ class Bookkeeper:
         self.view.set_cat_deleter(self.delete_category)
         self.view.set_cat_checker(self.cat_checker)
 
-        self.budget_rep = repository_type[Budget](
-                           db_file="database/bookkeeper.db",
-                           cls=Budget)
+        self.budget_rep = repository_factory(Budget)
         self.view.set_bdg_modifier(self.modify_budget)
 
-        self.expense_rep = repository_type[Expense](
-                           db_file="database/bookkeeper.db",
-                           cls=Expense)
+        self.expense_rep = repository_factory(Expense)
         self.update_expenses()
         self.view.set_exp_adder(self.add_expense)
         self.view.set_exp_deleter(self.delete_expenses)
@@ -174,15 +163,3 @@ class Bookkeeper:
             budget.limitation = new_limit
             self.budget_rep.update(budget)
         self.update_budgets()
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    view = View()
-    bookkeeper_app = Bookkeeper(view, SQLiteRepository)
-    bookkeeper_app.show()
-    print("Application is run")
-    print(f"Application ends with exit status {app.exec()}")
-    sys.exit()
-
-

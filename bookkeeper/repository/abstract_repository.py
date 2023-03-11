@@ -8,6 +8,7 @@
 """
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from typing import Generic, TypeVar, Protocol, Any
 
 
@@ -67,3 +68,13 @@ class AbstractRepository(ABC, Generic[T]):
     @abstractmethod
     def delete(self, pk: int) -> None:
         """ Удалить запись """
+
+def repository_factory(repo_type: type, db_file=None) -> Callable[[Model], AbstractRepository]:
+    if db_file is None:
+        def repo_gen(model: Model) -> AbstractRepository:
+            return repo_type[model]()
+        return repo_gen
+    else:
+        def repo_gen(model: Model) -> AbstractRepository:
+            return repo_type[model](db_file=db_file, cls=model)
+        return repo_gen
