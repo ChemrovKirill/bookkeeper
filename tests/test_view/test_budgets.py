@@ -2,8 +2,7 @@
 Тесты GUI для модуля с таблицей бюджетов
 """
 
-from PySide6.QtCore import Qt
-from PySide6 import QtWidgets
+from pytestqt.qt_compat import qt_api
 
 from bookkeeper.view.budget import BudgetTableWidget, BudgetTableGroup
 from bookkeeper.models.budget import Budget
@@ -27,10 +26,12 @@ def test_add_data(qtbot):
         for j, x in enumerate(row[:-1]):
             assert widget.item(i, j).text() == test_data[i][j]
             if j == 0:
-                flags = (Qt.ItemIsEditable | Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+                flags = (qt_api.QtCore.Qt.ItemIsEditable 
+                        | qt_api.QtCore.Qt.ItemIsEnabled 
+                        | qt_api.QtCore.Qt.ItemIsSelectable)
                 assert widget.item(i, j).flags() == flags
             else: 
-                assert widget.item(i, j).flags() == (Qt.ItemIsEnabled)
+                assert widget.item(i, j).flags() == qt_api.QtCore.Qt.ItemIsEnabled
 
 
 def test_cell_changed(qtbot):

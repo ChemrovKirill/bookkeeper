@@ -3,7 +3,6 @@
 """
 
 from pytestqt.qt_compat import qt_api
-from PySide6 import QtWidgets
 
 from bookkeeper.view.categories_edit import CategoriesEditWindow
 from bookkeeper.models.category import Category

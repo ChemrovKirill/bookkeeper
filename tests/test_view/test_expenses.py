@@ -3,7 +3,6 @@
 """
 
 from pytestqt.qt_compat import qt_api
-from PySide6 import QtWidgets
 
 from bookkeeper.view.expenses import ExpensesTableWidget, \
                                      ExpensesTableGroup
@@ -83,9 +82,9 @@ def test_delete_expenses(qtbot):
             Expense(300, 3, pk=3), Expense(400, 4, pk=4),]
     widget.set_expenses(exps)
     widget.table.setRangeSelected(
-                QtWidgets.QTableWidgetSelectionRange(1,1,2,2), True)
+                qt_api.QtWidgets.QTableWidgetSelectionRange(1,1,2,2), True)
     widget.table.setRangeSelected(
-                QtWidgets.QTableWidgetSelectionRange(1,3,3,4), True)
+                qt_api.QtWidgets.QTableWidgetSelectionRange(1,3,3,4), True)
     qtbot.mouseClick(
             widget.del_button,
             qt_api.QtCore.Qt.MouseButton.LeftButton
