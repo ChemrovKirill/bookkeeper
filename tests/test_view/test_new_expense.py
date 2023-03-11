@@ -3,7 +3,6 @@
 """
 
 from pytestqt.qt_compat import qt_api
-#from PySide6 import QtWidgets
 
 from bookkeeper.view.new_expense import NewExpenseGroup
 from bookkeeper.models.category import Category

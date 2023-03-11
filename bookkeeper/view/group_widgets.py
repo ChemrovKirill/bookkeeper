@@ -62,16 +62,4 @@ class GroupLabel(QtWidgets.QLabel):
         self.setAlignment(Qt.AlignCenter)
         #self.setLineWidth(1)
 
-class LabeledCheckBox(QtWidgets.QWidget):
-    def __init__(self, text, chstate_func=None, init_state=Qt.Unchecked, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.layout = QtWidgets.QHBoxLayout()
-        self.label = QtWidgets.QLabel(text)
-        self.layout.addWidget(self.label, stretch=1)
-        self.check_box = QtWidgets.QCheckBox()
-        self.check_box.setCheckState(Qt.Checked)
-        if chstate_func is not None:
-            self.check_box.stateChanged.connect(chstate_func)
-        self.layout.addWidget(self.check_box, stretch=1)
-        self.setLayout(self.layout)
         
