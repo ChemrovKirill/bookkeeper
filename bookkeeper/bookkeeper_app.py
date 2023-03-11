@@ -1,7 +1,8 @@
 from datetime import datetime
 
 from bookkeeper.view.abstract_view import AbstractView
-from bookkeeper.repository.abstract_repository import AbstractRepository, repository_factory
+from bookkeeper.repository.abstract_repository import AbstractRepository
+from bookkeeper.repository.factory import repository_factory
 from bookkeeper.models.category import Category
 from bookkeeper.models.expense import Expense
 from bookkeeper.models.budget import Budget

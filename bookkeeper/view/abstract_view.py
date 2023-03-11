@@ -7,9 +7,6 @@ from bookkeeper.models.budget import Budget
 
 class AbstractView(Protocol):
 
-    def show_main_window() -> None:
-        pass
-
     def set_categories(cats : list[Category]) -> None:
         pass
 

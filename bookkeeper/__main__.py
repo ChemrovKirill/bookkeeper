@@ -4,7 +4,9 @@ import sys
 from bookkeeper.bookkeeper_app import Bookkeeper
 from bookkeeper.view.view import View
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
-from bookkeeper.repository.abstract_repository import repository_factory
+from bookkeeper.repository.factory import repository_factory
+
+
 app = QtWidgets.QApplication(sys.argv)
 view = View()
 repo_gen = repository_factory(SQLiteRepository, db_file="database/bookkeeper.db")
