@@ -12,7 +12,7 @@ cat_adder = lambda name, parent: None
 cat_deleter = lambda cat_name: None
 cat_checker = lambda parent_name: None
 
-def test_create_widget(qtbot):
+def test_create_window(qtbot):
     widget = CategoriesEditWindow([], cat_adder, cat_deleter)
     qtbot.addWidget(widget)
     assert widget.cat_adder == cat_adder
