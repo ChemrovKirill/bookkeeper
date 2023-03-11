@@ -3,6 +3,8 @@ import sqlite3
 from dataclasses import dataclass
 
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
+from bookkeeper.repository.factory import repository_factory
+
 
 DB_FILE = "database/test_sqlrepo.db"
 
@@ -120,3 +122,8 @@ def test_get_all_like(repo, custom_class):
         objects.append(o)
     assert [objects[0]] == repo.get_all_like({'f1': '0'})
     assert objects == repo.get_all_like({'f2': 'test'})
+
+def test_factory(custom_class, create_bd):
+    repo_gen = repository_factory(SQLiteRepository, db_file=DB_FILE)
+    rep = repo_gen(custom_class)
+    test_crud(rep, custom_class)

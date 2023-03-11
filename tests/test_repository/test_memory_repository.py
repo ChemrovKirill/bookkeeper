@@ -1,4 +1,5 @@
 from bookkeeper.repository.memory_repository import MemoryRepository
+from bookkeeper.repository.factory import repository_factory
 
 import pytest
 
@@ -80,3 +81,8 @@ def test_get_like(repo, custom_class):
         objects.append(o)
     assert repo.get_all_like({'name': '0'}) == [objects[0]]
     assert repo.get_all_like({'test': 'test'}) == objects
+
+def test_factory(custom_class):
+    repo_gen = repository_factory(MemoryRepository)
+    rep = repo_gen(custom_class)
+    test_crud(rep, custom_class)
