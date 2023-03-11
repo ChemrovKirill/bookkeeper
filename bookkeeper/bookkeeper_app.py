@@ -1,11 +1,16 @@
 from datetime import datetime
 
-from bookkeeper.view.view import AbstractView, View
+from bookkeeper.view.view import View
+from bookkeeper.view.abstract_view import AbstractView
 from bookkeeper.repository.abstract_repository import AbstractRepository
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
 from bookkeeper.models.category import Category
 from bookkeeper.models.expense import Expense
 from bookkeeper.models.budget import Budget
+
+from PySide6 import QtWidgets
+import sys
+
 
 class Bookkeeper:
     
@@ -37,8 +42,8 @@ class Bookkeeper:
         self.view.set_exp_modifier(self.modify_expense)
 
 
-    def start_app(self):
-        self.view.show_main_window()
+    def show(self):
+        self.view.main_window.show()
         
     # def modify_cat(self, cat: Category) -> None:
     #     self.category_rep.update(cat)
@@ -172,7 +177,12 @@ class Bookkeeper:
 
 
 if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
     view = View()
     bookkeeper_app = Bookkeeper(view, SQLiteRepository)
-    bookkeeper_app.start_app()
+    bookkeeper_app.show()
+    print("Application is run")
+    print(f"Application ends with exit status {app.exec()}")
+    sys.exit()
+
 

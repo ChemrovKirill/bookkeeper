@@ -36,22 +36,17 @@ class View:
         self.config_cats_edit()
         self.budget_table = BudgetTableGroup(self.modify_budget)
         self.new_expense = NewExpenseGroup(self.categories, 
-                                           self.cats_edit_show,
+                                           self.cats_edit_window.show,
                                            self.add_expense)
         self.expenses_table = ExpensesTableGroup(self.catpk_to_name,
                                                  self.modify_expense,
                                                  self.delete_expenses)
         self.config_main_window()
         
-
-    def show_main_window(self):
-        self.main_window.show()
-        print("Application is run")
-        print(f"Application ends with exit status {self.app.exec()}")
-        sys.exit()
     
     def config_app(self):
-        self.app = QtWidgets.QApplication(sys.argv)
+        #self.app = QtWidgets.QApplication(sys.argv)
+        self.app = QtWidgets.QApplication.instance()
         #self.app.setQuitOnLastWindowClosed(False)
         self.app.setStyle("Fusion")
         self.app.setPalette(PaletteMode(is_dark_mode=True))
@@ -60,7 +55,7 @@ class View:
         self.main_window = MainWindow(self.budget_table, 
                                       self.new_expense, 
                                       self.expenses_table)
-        self.main_window.resize(600, 800)
+        self.main_window.resize(550, 700)
 
     def config_cats_edit(self):
         self.cats_edit_window = CategoriesEditWindow(self.categories, 
@@ -68,9 +63,6 @@ class View:
                                                      self.delete_category)
         self.cats_edit_window.setWindowTitle("Редактирование категорий")
         self.cats_edit_window.resize(500, 500)
-
-    def cats_edit_show(self):
-        self.cats_edit_window.show()
 
     def set_categories(self, cats: list[Category]) -> None:
         self.categories = cats
