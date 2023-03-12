@@ -57,9 +57,9 @@ def test_set_expenses(qtbot):
                                 exp_modifier, 
                                 exp_deleter)
     qtbot.addWidget(widget)
-    exps = [Expense(100, 1, expense_date="12.12.2012 15:30", 
+    exps = [Expense(100, 1, expense_date="2012-12-12 21:21", 
                             comment="test"), 
-            Expense(200, 2, expense_date="12.12.2012 15:30")]
+            Expense(200, 2, expense_date="2012-12-12 12:12")]
     widget.set_expenses(exps)
     assert widget.expenses == exps
     for exp, w_data in zip(exps, widget.data):

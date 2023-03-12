@@ -1,5 +1,5 @@
 """
-Тесты GUI для View из модели MVP
+Тесты View из модели MVP
 """
 
 from pytestqt.qt_compat import qt_api

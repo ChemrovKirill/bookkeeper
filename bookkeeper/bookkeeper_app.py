@@ -142,11 +142,13 @@ class Bookkeeper:
 
 
     def modify_budget(self, pk: int | None, new_limit: str, period: str):
+        # удаление
         if new_limit == "":
             if pk is not None:
                 self.budget_rep.delete(pk)
             self.update_budgets()
             return
+        # добавление/изменение
         try:
             new_limit = int(new_limit)
         except ValueError:
@@ -156,9 +158,11 @@ class Bookkeeper:
         if new_limit < 0:
             self.update_budgets()
             raise ValueError('За этот период придется заработать.')
+        # добавление
         if pk is None:
             budget = Budget(limitation=new_limit, period=period)
             self.budget_rep.add(budget)
+        # изменение
         else:
             budget = self.budget_rep.get(pk)
             budget.limitation = new_limit
