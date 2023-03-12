@@ -8,35 +8,37 @@ from bookkeeper.models.budget import Budget
 class AbstractView(Protocol):
 
     def set_categories(cats : list[Category]) -> None:
-        pass
+        """ устанавливает список категорий """
 
     def set_expenses(cats : list[Expense]) -> None:
-        pass
+        """ устанавливает список трат """
 
     def set_budgets(cats : list[Budget]) -> None:
-        pass
+        """ устанавливает список бюджетов """
     
     def set_cat_adder(handler: Callable[[str, str], None]) -> None:
-        pass
+        """ устанавливает функцию добавления категории """
 
     def set_cat_deleter(handler: Callable[[str], None]) -> None:
-        pass
+        """ устанавливает функцию удаления категории """
 
     def set_cat_checker(handler: Callable[[str], None]) -> None:
-        pass
+        """ устанавливает функцию проверки названия категории """
 
     def set_bdg_modifier(handler: Callable[['int | None', str, str], 
                                                         None]) -> None:
-        pass
+        """ 
+        устанавливает функцию изменения (удаления, добавления) бюджета
+        """
 
     def set_exp_adder(handler: Callable[[str, str, str], None]) -> None:
-        pass
+        """ устанавливает функцию добавления траты """
 
     def set_exp_deleter(handler: Callable[[list[int]], None]) -> None:
-        pass
+        """ устанавливает функцию удаления траты """
 
     def set_exp_modifier(handler: Callable[[int, str, str], None]) -> None:
-        pass
+        """ устанавливает функцию изменения траты """
 
     def death() -> None:
-        pass
+        """ устанавливает функцию превышения бюджета """
