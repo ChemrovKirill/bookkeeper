@@ -19,8 +19,9 @@ class Category:
     parent: int | None = None
     pk: int = 0
 
-    def get_parent(self, repo: AbstractRepository['Category']) \
-            -> 'Category | None':  # type: ignore
+    def get_parent(self,
+                   repo: AbstractRepository['Category']  # type: ignore
+                   ) -> 'Category | None':
         """
         Получить родительскую категорию в виде объекта Category
         Если метод вызван у категории верхнего уровня, возвращает None

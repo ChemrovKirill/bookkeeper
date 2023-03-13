@@ -3,7 +3,7 @@
 """
 # mypy: disable-error-code="attr-defined"
 from datetime import datetime
-from typing import Any
+from typing import Any, Iterable
 from collections.abc import Callable
 
 from bookkeeper.view.abstract_view import AbstractView
@@ -54,7 +54,7 @@ class Bookkeeper:
         if cat_name not in [c.name for c in self.categories]:
             raise ValueError(f'Категории "{cat_name}" не существует')
 
-    def add_category(self, name: str, parent: str) -> None:
+    def add_category(self, name: str, parent: str | None) -> None:
         """ Добавляет категорию с названием name и названием родителя parent"""
         if name in [c.name for c in self.categories]:
             raise ValueError(f'Категория "{name}" уже существует')
@@ -154,7 +154,7 @@ class Bookkeeper:
         self.expense_rep.update(exp)
         self.update_expenses()
 
-    def delete_expenses(self, exp_pks: list[int]) -> None:
+    def delete_expenses(self, exp_pks: Iterable[int]) -> None:
         """ Удаляет траты по списку id (exp_pks) """
         for pk in exp_pks:
             self.expense_rep.delete(pk)

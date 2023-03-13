@@ -2,8 +2,9 @@
 # pylint: disable=no-name-in-module
 # pylint: disable=c-extension-no-member
 # mypy: disable-error-code="attr-defined,union-attr"
+from typing import Any
 from PySide6 import QtWidgets
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QEvent
 
 from bookkeeper.view.budget import BudgetTableGroup
 from bookkeeper.view.new_expense import NewExpenseGroup
@@ -19,15 +20,15 @@ class MainWindow(QtWidgets.QWidget):
                  budget_table: BudgetTableGroup,
                  new_expense: NewExpenseGroup,
                  expenses_table: ExpensesTableGroup,
-                 *args, **kwargs):
+                 *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
-        self.is_dark_mode = True
+        self.is_dark_mode: bool = True
         self.vbox = QtWidgets.QVBoxLayout()
         self.setWindowTitle("Bookkeeper v0.2")
         self.theme = LabeledCheckBox("Темная тема",
                                      init_state=Qt.Checked,
                                      chstate_func=self.change_theme)
-        self.vbox.addWidget(self.theme, stretch=0.1, alignment=Qt.AlignRight)
+        self.vbox.addWidget(self.theme, alignment=Qt.AlignRight)
         # Бюджет
         self.budget_table = budget_table
         self.vbox.addWidget(self.budget_table, stretch=3)
@@ -40,7 +41,7 @@ class MainWindow(QtWidgets.QWidget):
         self.setLayout(self.vbox)
 
     # pylint: disable=unused-argument
-    def change_theme(self, status):
+    def change_theme(self, status: Qt.CheckState) -> None:
         """ Изменяет тему (светлая или темная) """
         app = QtWidgets.QApplication.instance()
         if self.theme.check_box.isChecked():
@@ -51,7 +52,7 @@ class MainWindow(QtWidgets.QWidget):
             app.setPalette(PaletteMode(is_dark_mode=False))
 
     # pylint: disable=invalid-name
-    def closeEvent(self, event):
+    def closeEvent(self, event: QEvent) -> None:
         """ Диалоговое окно при закрытии приложения """
         reply = QtWidgets.QMessageBox.question(
             self,

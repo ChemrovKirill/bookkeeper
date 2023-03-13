@@ -1,5 +1,5 @@
 """ Модуль описывает протокол View модели MVP """
-from typing import Protocol
+from typing import Protocol, Iterable
 from collections.abc import Callable
 
 from bookkeeper.models.category import Category
@@ -19,7 +19,7 @@ class AbstractView(Protocol):
     def set_budgets(self, cats: list[Budget]) -> None:
         """ устанавливает список бюджетов """
 
-    def set_cat_adder(self, handler: Callable[[str, str], None]) -> None:
+    def set_cat_adder(self, handler: Callable[[str, str | None], None]) -> None:
         """ устанавливает функцию добавления категории """
 
     def set_cat_deleter(self, handler: Callable[[str], None]) -> None:
@@ -37,7 +37,7 @@ class AbstractView(Protocol):
     def set_exp_adder(self, handler: Callable[[str, str, str], None]) -> None:
         """ устанавливает функцию добавления траты """
 
-    def set_exp_deleter(self, handler: Callable[[list[int]], None]) -> None:
+    def set_exp_deleter(self, handler: Callable[[Iterable[int]], None]) -> None:
         """ устанавливает функцию удаления траты """
 
     def set_exp_modifier(self, handler: Callable[[int, str, str], None]) -> None:

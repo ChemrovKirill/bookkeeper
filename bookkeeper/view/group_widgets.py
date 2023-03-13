@@ -2,10 +2,11 @@
 # pylint: disable=no-name-in-module
 # pylint: disable=c-extension-no-member
 # pylint: disable=too-few-public-methods
-# mypy: disable-error-code="attr-defined"
+# mypy: disable-error-code="attr-defined,assignment"
 from typing import Any
 from PySide6.QtCore import Qt
 from PySide6 import QtWidgets
+
 
 class LabeledLineInput(QtWidgets.QWidget):
     """ Виджет поля для ввода с названием """
@@ -19,7 +20,7 @@ class LabeledLineInput(QtWidgets.QWidget):
         self.layout.addWidget(self.label, stretch=1)
         self.input = QtWidgets.QLineEdit(self.placeholder)
         self.layout.addWidget(self.input, stretch=4)
-        self.setLayout(self.layout)
+        self.setLayout(self.layout)  # type: ignore
 
     def clear(self) -> None:
         """ Устанавливает значение по умолчанию """
@@ -50,7 +51,7 @@ class LabeledComboBoxInput(QtWidgets.QWidget):
         self.combo_box.setMaxVisibleItems(16)
         self.set_items(items)
         self.layout.addWidget(self.combo_box, stretch=4)
-        self.setLayout(self.layout)
+        self.setLayout(self.layout)  # type: ignore
 
     def clear(self) -> None:
         """ Устанавливает значение по умолчанию """
@@ -102,4 +103,4 @@ class LabeledCheckBox(QtWidgets.QWidget):
         if chstate_func is not None:
             self.check_box.stateChanged.connect(chstate_func)
         self.layout.addWidget(self.check_box, stretch=1)
-        self.setLayout(self.layout)
+        self.setLayout(self.layout)  # type: ignore
