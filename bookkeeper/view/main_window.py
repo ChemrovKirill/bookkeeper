@@ -24,7 +24,7 @@ class MainWindow(QtWidgets.QWidget):
         super().__init__(*args, **kwargs)
         self.is_dark_mode: bool = True
         self.vbox = QtWidgets.QVBoxLayout()
-        self.setWindowTitle("Bookkeeper v0.2")
+        self.setWindowTitle("Bookkeeper")
         self.theme = LabeledCheckBox("Темная тема",
                                      init_state=Qt.Checked,
                                      chstate_func=self.change_theme)
