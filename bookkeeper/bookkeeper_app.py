@@ -45,10 +45,6 @@ class Bookkeeper:
         """ Включает отображение view на экране """
         self.view.main_window.show()
 
-    # def modify_cat(self, cat: Category) -> None:
-    #     self.category_rep.update(cat)
-    #     self.view.set_categories(self.categories)
-
     def cat_checker(self, cat_name: str) -> None:
         """ Проверяет, что имя категории (cat_name) есть в репозитории """
         if cat_name not in [c.name for c in self.categories]:
