@@ -76,26 +76,29 @@ def test_set_handler(monkeypatch):
     view.set_cat_adder(handler)
     view.add_category('name', 'parent')
     assert handler.call_count == 1
+    view.set_cat_modifier(handler)
+    view.modify_category('cat_name', 'new_name', 'new_parent')
+    assert handler.call_count == 2
     view.set_cat_deleter(handler)
     view.delete_category('cat_name')
-    assert handler.call_count == 2
+    assert handler.call_count == 3
     view.set_cat_checker(handler)
     view.cat_checker('cat_name')
-    assert handler.call_count == 3
+    assert handler.call_count == 4
     view.set_bdg_modifier(handler)
     view.modify_budget(1, 'new_limit', 'period')
-    assert handler.call_count == 4
+    assert handler.call_count == 5
     view.set_exp_adder(handler)
     view.add_expense('amount', 'cat_name')
-    assert handler.call_count == 5
+    assert handler.call_count == 6
     monkeypatch.setattr(qt_api.QtWidgets.QMessageBox,
                         "question", lambda *args: qt_api.QtWidgets.QMessageBox.Yes)
     view.set_exp_deleter(handler)
     view.delete_expenses([1])
-    assert handler.call_count == 6
+    assert handler.call_count == 7
     view.set_exp_modifier(handler)
     view.modify_expense(1, 'attr', 'new_val')
-    assert handler.call_count == 7
+    assert handler.call_count == 8
 
 
 def test_delete_expenses(monkeypatch):

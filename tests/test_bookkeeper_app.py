@@ -50,6 +50,25 @@ def test_categories(bkkpr):
         bkkpr.add_category("cat1", None)
     with pytest.raises(ValueError):
         bkkpr.add_category("cat21", "cat2")
+    # изменение
+    with pytest.raises(ValueError):
+        bkkpr.modify_category("cat2", "", "")
+    with pytest.raises(ValueError):
+        bkkpr.modify_category("cat1", "", "")
+    with pytest.raises(ValueError):
+        bkkpr.modify_category("cat1", "cat12", "")
+    with pytest.raises(ValueError):
+        bkkpr.modify_category("cat1", "cat1", "cat2")
+    bkkpr.modify_category("cat12", "cat12new", None)
+    cat12 = bkkpr.category_rep.get_all(where={"name": "cat12new"})
+    assert len(cat12) != 0
+    cat12 = cat12[0]
+    assert cat12.parent is None
+    bkkpr.modify_category("cat12new", "cat12", "cat1")
+    cat12 = bkkpr.category_rep.get_all(where={"name": "cat12"})
+    assert len(cat12) != 0
+    cat12 = cat12[0]
+    assert cat12.parent == cat1.pk
     # удаление
     with pytest.raises(ValueError):
         bkkpr.delete_category("cat2")
