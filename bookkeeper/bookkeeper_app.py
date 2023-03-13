@@ -26,8 +26,8 @@ class Bookkeeper:
         self.category_rep = repository_factory(Category)
         self.categories = self.category_rep.get_all()
         self.view.set_categories(self.categories)
-        # self.view.set_cat_modifier(self.modify_cat)
         self.view.set_cat_adder(self.add_category)
+        self.view.set_cat_modifier(self.modify_category)
         self.view.set_cat_deleter(self.delete_category)
         self.view.set_cat_checker(self.cat_checker)
 
@@ -66,7 +66,28 @@ class Bookkeeper:
             parent_pk = None
         cat = Category(name, parent_pk)
         self.category_rep.add(cat)
-        self.categories.append(cat)
+        self.categories = self.category_rep.get_all()
+        self.view.set_categories(self.categories)
+
+    def modify_category(self, cat_name: str, new_name: str,
+                        new_parent: str | None) -> None:
+        """ Изменяет имя и родителя категории """
+        if cat_name not in [c.name for c in self.categories]:
+            raise ValueError(f'Категории "{cat_name}" не существует')
+        if new_name != cat_name:
+            if new_name in [c.name for c in self.categories]:
+                raise ValueError(f'Категория "{new_name}" уже существует')
+        if new_parent is not None:
+            if new_parent not in [c.name for c in self.categories]:
+                raise ValueError(f'Категории "{new_parent}" не существует')
+            parent_pk = self.category_rep.get_all(where={'name': new_parent})[0].pk
+        else:
+            parent_pk = None
+        cat = self.category_rep.get_all(where={'name': cat_name})[0]
+        cat.name = new_name
+        cat.parent = parent_pk
+        self.category_rep.update(cat)
+        self.categories = self.category_rep.get_all()
         self.view.set_categories(self.categories)
 
     def delete_category(self, cat_name: str) -> None:

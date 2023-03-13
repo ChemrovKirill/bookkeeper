@@ -61,15 +61,16 @@ class View:
         self.main_window = MainWindow(self.budget_table,
                                       self.new_expense,
                                       self.expenses_table)
-        self.main_window.resize(550, 700)
+        self.main_window.resize(600, 700)
 
     def config_cats_edit(self) -> None:
         """ Конфигурирует окно изменение списка категорий """
         self.cats_edit_window = CategoriesEditWindow(self.categories,
                                                      self.add_category,
+                                                     self.modify_category,
                                                      self.delete_category)
         self.cats_edit_window.setWindowTitle("Редактирование категорий")
-        self.cats_edit_window.resize(500, 500)
+        self.cats_edit_window.resize(600, 550)
 
     def set_categories(self, cats: list[Category]) -> None:
         """ Устанавливает список категорий """
@@ -84,12 +85,13 @@ class View:
             return str(name[0])
         return ""
 
-    # def set_cat_modifier(self, handler: callable):
-    #     pass
-
     def set_cat_adder(self, handler: Callable[[str, str | None], None]) -> None:
         """ Устанавливает метод добавления категории """
         self.cat_adder = handle_error(self.main_window, handler)
+
+    def set_cat_modifier(self, handler: Callable[[str, str, str | None], None]) -> None:
+        """ Устанавливает метод изменения категории """
+        self.cat_modifier = handle_error(self.main_window, handler)
 
     def set_cat_deleter(self, handler: Callable[[str], None]) -> None:
         """ Устанавливает метод удаления категории """
@@ -103,6 +105,11 @@ class View:
     def add_category(self, name: str, parent: str | None) -> None:
         """ Вызывает функцию добавления категории """
         self.cat_adder(name, parent)
+
+    def modify_category(self, cat_name: str, new_name: str,
+                        new_parent: str | None) -> None:
+        """ Вызывает функцию изменения категории """
+        self.cat_modifier(cat_name, new_name, new_parent)
 
     def delete_category(self, cat_name: str) -> None:
         """ Вызывает функцию удаления категории """
