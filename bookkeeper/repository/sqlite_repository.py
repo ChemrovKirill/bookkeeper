@@ -25,7 +25,7 @@ class SQLiteRepository(AbstractRepository[T]):
         self.fields.pop('pk')
         self.obj_cls = cls
 
-    def add(self, obj: T) -> int:
+    def add(self, obj: T) -> int | None:
         if getattr(obj, 'pk', None) != 0:
             raise ValueError(f'trying to add object {obj} with filled `pk` attribute')
         names = ', '.join(self.fields.keys())
@@ -47,7 +47,7 @@ class SQLiteRepository(AbstractRepository[T]):
         kwargs = dict(zip(self.fields, row))
         obj = self.obj_cls(**kwargs)
         obj.pk = rowid
-        return obj
+        return obj  # type: ignore
 
     def get(self, pk: int) -> T | None:
         with sqlite3.connect(self.db_file) as con:

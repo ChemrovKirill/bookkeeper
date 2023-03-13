@@ -1,3 +1,7 @@
+""" Модуль описывает группу с таблицей бюджетов """
+# pylint: disable = no-name-in-module
+# pylint: disable=c-extension-no-member
+# mypy: disable-error-code="attr-defined"
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 
@@ -6,50 +10,63 @@ from bookkeeper.models.budget import Budget
 
 
 class BudgetTableWidget(QtWidgets.QTableWidget):
+    """ Виджет-таблица бюджетов """
+
     def __init__(self, bdg_modifier, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.data = []
         self.bdg_modifier = bdg_modifier
         self.setColumnCount(3)
         self.setRowCount(3)
-        self.row_to_period = {0:"day", 1:"week", 2:"month"}
+        self.row_to_period = {0: "day", 1: "week", 2: "month"}
         hheaders = "Бюджет Потрачено Остаток".split()
         self.setHorizontalHeaderLabels(hheaders)
         vheaders = "День Неделя Месяц".split()
         self.setVerticalHeaderLabels(vheaders)
-        for h in [self.horizontalHeader(), self.verticalHeader(),]:
-            h.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)   
+        for hdr in [self.horizontalHeader(), self.verticalHeader(),]:
+            hdr.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.setEditTriggers(
             QtWidgets.QAbstractItemView.DoubleClicked)
         self.cellDoubleClicked.connect(self.double_click)
 
-    def double_click(self, row, columns):
+    # pylint: disable=unused-argument
+    # pylint: disable=duplicate-code
+    def double_click(self, row, columns) -> None:
+        """ Обрабатывает двойное нажатие по ячейке """
         self.cellChanged.connect(self.cell_changed)
 
-    def cell_changed(self, row, column):
+    def cell_changed(self, row, column) -> None:
+        """ Обрабатывает изменение ячейки """
         self.cellChanged.disconnect(self.cell_changed)
         pk = self.data[row][-1]
         new_limit = self.item(row, column).text()
         self.bdg_modifier(pk, new_limit, self.row_to_period[row])
 
-    def add_data(self, data: list[list[str]]):
+    # pylint: disable=duplicate-code
+    def add_data(self, data: list[list[str]]) -> None:
+        """ Добавляет данные в таблицу """
         self.data = data
-        for i, row in enumerate(data):
-            for j, x in enumerate(row[:-1]):
+        for i_row, row in enumerate(data):
+            for j_col, text in enumerate(row[:-1]):
                 self.setItem(
-                    i, j,
-                    QtWidgets.QTableWidgetItem(x.capitalize())
+                    i_row, j_col,
+                    QtWidgets.QTableWidgetItem(text.capitalize())
                 )
-                self.item(i, j).setTextAlignment(Qt.AlignCenter)
-                if j == 0:
-                    self.item(i, j).setFlags(Qt.ItemIsEditable 
-                                             | Qt.ItemIsEnabled 
-                                             | Qt.ItemIsSelectable)
-                else: 
-                    self.item(i, j).setFlags(Qt.ItemIsEnabled)
+                self.item(i_row, j_col).setTextAlignment(Qt.AlignCenter)
+                if j_col == 0:
+                    self.item(i_row, j_col).setFlags(Qt.ItemIsEditable
+                                                     | Qt.ItemIsEnabled
+                                                     | Qt.ItemIsSelectable)
+                else:
+                    self.item(i_row, j_col).setFlags(Qt.ItemIsEnabled)
 
 
 class BudgetTableGroup(QtWidgets.QGroupBox):
+    """ Группа бюджетов с таблицей и заголовком"""
+
     def __init__(self, bdg_modifier, *args, **kwargs):
+        self.data = []
+        self.budgets = []
         super().__init__(*args, **kwargs)
         self.vbox = QtWidgets.QVBoxLayout()
         self.label = GroupLabel("<b>Бюджет</b>")
@@ -58,20 +75,22 @@ class BudgetTableGroup(QtWidgets.QGroupBox):
         self.vbox.addWidget(self.table)
         self.setLayout(self.vbox)
 
-    def set_budgets(self, budgets: list[Budget]):
+    def set_budgets(self, budgets: list[Budget]) -> None:
+        """ Устанавлиявает список бюджетов """
         self.budgets = budgets
         self.data = self.budgets_to_data(self.budgets)
         self.table.clearContents()
         self.table.add_data(self.data)
 
-    def budgets_to_data(self, budgets: list[Budget]):
+    def budgets_to_data(self, budgets: list[Budget]) -> list[list[str]]:
+        """ Конвертирует объекты бюджетов в данные для таблицы """
         data = []
         for period in ["day", "week", "month"]:
-            bdg = [b for b in budgets if b.period == period]
+            bdg = [bi for bi in budgets if bi.period == period]
             if len(bdg) == 0:
                 data.append(["- Не установлен -", "", "", None])
             else:
-                b = bdg[0]
-                data.append([str(b.limitation), str(b.spent),
-                            str(int(b.limitation) - int(b.spent)), b.pk])
-        return data    
+                bdg = bdg[0]
+                data.append([str(bdg.limitation), str(bdg.spent),
+                            str(int(bdg.limitation) - int(bdg.spent)), bdg.pk])
+        return data

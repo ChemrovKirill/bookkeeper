@@ -47,6 +47,7 @@ poetry run python -m pytest
 poetry run mypy --strict bookkeeper
 poetry run pylint bookkeeper
 poetry run flake8 bookkeeper
+poetry run flake8 --max-complexity 10
 ```
 
 При проверке работы будут использоваться эти же инструменты с теми же настройками.

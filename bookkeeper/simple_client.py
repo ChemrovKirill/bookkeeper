@@ -8,9 +8,9 @@ from bookkeeper.models.budget import Budget
 from bookkeeper.repository.memory_repository import MemoryRepository
 from bookkeeper.utils import read_tree
 
-cat_repo = MemoryRepository[Category]()
-exp_repo = MemoryRepository[Expense]()
-budget_repo = MemoryRepository[Budget]()
+cat_repo = MemoryRepository[Category]()  # type: ignore
+exp_repo = MemoryRepository[Expense]()  # type: ignore
+budget_repo = MemoryRepository[Budget]()  # type: ignore
 
 cats = '''
 продукты
@@ -31,6 +31,7 @@ budget_repo.add(budget)
 budget = Budget(period="month", limitation=30000, spent=0)
 budget_repo.add(budget)
 
+# flake8: noqa
 while True:
     try:
         cmd = input('$> ')

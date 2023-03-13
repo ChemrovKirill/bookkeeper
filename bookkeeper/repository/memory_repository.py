@@ -14,10 +14,10 @@ class MemoryRepository(AbstractRepository[T]):
     """
 
     def __init__(self) -> None:
-        self._container: dict[int, T] = {}
+        self._container: dict[int | None, T] = {}
         self._counter = count(1)
 
-    def add(self, obj: T) -> int:
+    def add(self, obj: T) -> int | None:
         if getattr(obj, 'pk', None) != 0:
             raise ValueError(f'trying to add object {obj} with filled `pk` attribute')
         pk = next(self._counter)

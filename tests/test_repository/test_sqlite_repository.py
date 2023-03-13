@@ -8,14 +8,15 @@ from bookkeeper.repository.factory import repository_factory
 
 DB_FILE = "database/test_sqlrepo.db"
 
+
 @pytest.fixture
 def create_bd():
     with sqlite3.connect(DB_FILE) as con:
         cur = con.cursor()
-        cur.execute(f"DROP TABLE custom")
+        cur.execute("DROP TABLE custom")
     with sqlite3.connect(DB_FILE) as con:
         cur = con.cursor()
-        cur.execute(f"CREATE TABLE custom(f1, f2)")
+        cur.execute("CREATE TABLE custom(f1, f2)")
     con.close()
 
 
@@ -101,6 +102,7 @@ def test_get_all(repo, custom_class):
         repo.add(o)
     assert objects == repo.get_all()
 
+
 def test_get_all_with_condition(repo, custom_class):
     objects = []
     for i in range(5):
@@ -112,6 +114,7 @@ def test_get_all_with_condition(repo, custom_class):
     assert [objects[0]] == repo.get_all({'f1': 0})
     assert objects == repo.get_all({'f2': 'test'})
 
+
 def test_get_all_like(repo, custom_class):
     objects = []
     for i in range(5):
@@ -122,6 +125,7 @@ def test_get_all_like(repo, custom_class):
         objects.append(o)
     assert [objects[0]] == repo.get_all_like({'f1': '0'})
     assert objects == repo.get_all_like({'f2': 'test'})
+
 
 def test_factory(custom_class, create_bd):
     repo_gen = repository_factory(SQLiteRepository, db_file=DB_FILE)

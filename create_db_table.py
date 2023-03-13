@@ -7,8 +7,8 @@ from bookkeeper.utils import read_tree
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
 
 for db_file in ["database/bookkeeper.db",
-                #"database/simple-client-sql.db",
-               ]:
+                # "database/simple-client-sql.db",
+                ]:
     for cls in [Category, Expense, Budget]:
         table_name = cls.__name__.lower()
         fields = get_annotations(cls, eval_str=True)

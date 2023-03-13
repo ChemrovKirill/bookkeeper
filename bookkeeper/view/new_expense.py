@@ -1,13 +1,24 @@
+""" Модуль описывает группу с добавлением новой траты """
+# pylint: disable = no-name-in-module
+# pylint: disable=c-extension-no-member
+# pylint: disable=too-many-instance-attributes
+# mypy: disable-error-code="attr-defined"
+from typing import Any
+from collections.abc import Callable
 from PySide6 import QtWidgets
 
-from bookkeeper.view.group_widgets import GroupLabel, LabeledComboBoxInput, LabeledLineInput
+from bookkeeper.view.group_widgets import GroupLabel, \
+                                          LabeledComboBoxInput, \
+                                          LabeledLineInput
 from bookkeeper.models.category import Category
 
+
 class NewExpenseGroup(QtWidgets.QGroupBox):
-    def __init__(self, cats: list[Category], 
-                       cats_edit_show, 
-                       exp_adder,
-                       *args, **kwargs):
+    """ Группа виджетов добавления новой траты """
+    def __init__(self, cats: list[Category],
+                 cats_edit_show: Callable[[], None],
+                 exp_adder: Callable[[str, str, str], None],
+                 *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self.cats_edit_show = cats_edit_show
         self.exp_adder = exp_adder
@@ -28,16 +39,18 @@ class NewExpenseGroup(QtWidgets.QGroupBox):
         self.grid.addWidget(self.submit_button, 4, 0, 1, 5)
         self.setLayout(self.grid)
         self.set_categories(cats)
-    
-    def set_categories(self, cats: list[Category]):
+
+    def set_categories(self, cats: list[Category]) -> None:
+        """ Устанавливает список категорий """
         self.categories = cats
         self.cat_names = [c.name for c in cats]
         self.category_input.set_items(self.cat_names)
 
-    def add_expense(self):
-        self.exp_adder(self.amount_input.text(), 
-                       self.category_input.text(), 
-                       comment=self.comment_input.text())
+    def add_expense(self) -> None:
+        """ Вызывает добавление новой траты """
+        self.exp_adder(self.amount_input.text(),
+                       self.category_input.text(),
+                       self.comment_input.text())
         self.amount_input.clear()
         self.category_input.clear()
         self.comment_input.clear()

@@ -1,8 +1,16 @@
+""" Модуль описывающий режимы палитры для темной или светлой темы """
+# pylint: disable=no-name-in-module
+# pylint: disable=c-extension-no-member
+# pylint: disable=too-few-public-methods
+# mypy: disable-error-code="attr-defined"
+from typing import Any
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPalette, QColor
 
+
 class PaletteMode(QPalette):
-    def __init__(self, is_dark_mode=False, *args, **kwargs):
+    """ Режим палитры для темной или светлой темы """
+    def __init__(self, is_dark_mode: bool, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
         if is_dark_mode:
             self.setColor(QPalette.Window, QColor(53, 53, 53))

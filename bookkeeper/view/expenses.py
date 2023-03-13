@@ -1,3 +1,10 @@
+""" Модуль описывает виджет-таблицу расходов """
+# pylint: disable=no-name-in-module
+# pylint: disable=c-extension-no-member
+# pylint: disable=too-many-instance-attributes
+# mypy: disable-error-code="attr-defined"
+from typing import Any, Iterable
+from collections.abc import Callable
 from PySide6 import QtWidgets
 
 from bookkeeper.view.group_widgets import GroupLabel
@@ -5,13 +12,17 @@ from bookkeeper.models.expense import Expense
 
 
 class ExpensesTableWidget(QtWidgets.QTableWidget):
-    def __init__(self, exp_modifier, *args, **kwargs):
+    """ Виджет-таблица расходов """
+    def __init__(self,
+                 exp_modifier: Callable[[int, str, str], None],
+                 *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
+        self.data: list[list[Any]] = []
         self.exp_modifier = exp_modifier
         self.setColumnCount(4)
         self.setRowCount(50)
         self.headers = "Дата Сумма Категория Комментарий".split()
-        self.col_to_attr = {0:"expense_date", 1:"amount", 2:"category", 3:"comment"}
+        self.col_to_attr = {0: "expense_date", 1: "amount", 2: "category", 3: "comment"}
         self.setHorizontalHeaderLabels(self.headers)
         header = self.horizontalHeader()
         header.setSectionResizeMode(
@@ -25,31 +36,41 @@ class ExpensesTableWidget(QtWidgets.QTableWidget):
         self.setEditTriggers(
             QtWidgets.QAbstractItemView.DoubleClicked)
         self.cellDoubleClicked.connect(self.double_click)
-        #self.verticalHeader().hide()
 
-    def double_click(self, row: int, columns: int) -> None:
+    # pylint: disable=unused-argument
+    def double_click(self, row: int, column: int) -> None:
+        """ Обрабатывает двойное нажатие на ячейку """
         self.cellChanged.connect(self.cell_changed)
 
-    def cell_changed(self, row, column):
+    def cell_changed(self, row: int, column: int) -> None:
+        """ Обрабатывает изменение ячейки """
         self.cellChanged.disconnect(self.cell_changed)
-        pk = self.data[row][-1]
+        pk = int(self.data[row][-1])
         new_val = self.item(row, column).text()
         attr = self.col_to_attr[column]
         self.exp_modifier(pk, attr, new_val)
 
-    def add_data(self, data: list[list[str]]):
+    def add_data(self, data: list[list[Any]]) -> None:
+        """ Добавляет данные в таблицу """
         self.data = data
-        for i, row in enumerate(data):
-            for j, x in enumerate(row[:-1]):
+        for i_row, row in enumerate(data):
+            for j_col, text in enumerate(row[:-1]):
                 self.setItem(
-                    i, j,
-                    QtWidgets.QTableWidgetItem(x.capitalize())
+                    i_row, j_col,
+                    QtWidgets.QTableWidgetItem(text.capitalize())
                 )
 
+
 class ExpensesTableGroup(QtWidgets.QGroupBox):
-    def __init__(self, catpk_to_name, exp_modifier, 
-                       exp_deleter, *args, **kwargs):
+    """ Группа с таблицей расходов """
+    def __init__(self,
+                 catpk_to_name: Callable[[int], str],
+                 exp_modifier: Callable[[int, str, str], None],
+                 exp_deleter: Callable[[Iterable[int]], None],
+                 *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
+        self.data: list[list[Any]] = []
+        self.expenses: list[Expense] = []
         self.catpk_to_name = catpk_to_name
         self.exp_deleter = exp_deleter
         self.vbox = QtWidgets.QVBoxLayout()
@@ -62,16 +83,18 @@ class ExpensesTableGroup(QtWidgets.QGroupBox):
         self.vbox.addWidget(self.del_button)
         self.setLayout(self.vbox)
 
-    def set_expenses(self, exps: list[Expense]):
+    def set_expenses(self, exps: list[Expense]) -> None:
+        """ Устанавлиявает список трат """
         self.expenses = exps
         self.data = self.exps_to_data(self.expenses)
         self.table.clearContents()
         self.table.add_data(self.data)
 
-    def exps_to_data(self, exps: list[Expense]):
+    def exps_to_data(self, exps: list[Expense]) -> list[list[Any]]:
+        """ Конвертирует объекты трат в данные для таблицы """
         data = []
         for exp in exps:
-            item = ["","","","",exp.pk]
+            item = ["", "", "", "", exp.pk]
             if exp.expense_date:
                 item[0] = str(exp.expense_date)
             if exp.amount:
@@ -84,7 +107,8 @@ class ExpensesTableGroup(QtWidgets.QGroupBox):
             data.append(item)
         return data
 
-    def delete_expenses(self):
+    def delete_expenses(self) -> None:
+        """ Вызывает удаление выделенных трат """
         pks_to_del = []
         chosen_ranges = self.table.selectedRanges()
         for ch_range in chosen_ranges:
